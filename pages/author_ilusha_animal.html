@@ -1,0 +1,146 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Автор: @ilusha_animal</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>%F0%9F%93%81</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root { color-scheme: dark; }
+html, body { max-width:100%; overflow-x:hidden; }
+body { background:#111; color:#eee; font-family:-apple-system,Segoe UI,Arial,sans-serif; margin:0; padding:24px; box-sizing:border-box; }
+*, *::before, *::after { box-sizing:inherit; }
+h1 { font-size:22px; margin-bottom:4px; }
+.pageheader { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
+.pageheader h1 { margin:0; }
+nav { margin-bottom:2px; }
+nav a { color:#7cc4ff; margin-right:14px; text-decoration:none; font-size:14px; }
+nav a.active { color:#fff; text-decoration:underline; }
+nav a.home { color:#ddd; }
+.supercat-row { display:flex; gap:20px; flex-wrap:wrap; margin-bottom:6px; }
+.supercat { color:#6ee7c4; font-weight:700; text-transform:uppercase; letter-spacing:.05em; font-size:13px; cursor:pointer; user-select:none; }
+.acc-arrow { display:inline-block; width:10px; }
+.accordion-body { margin-bottom:8px; }
+.accordion-body.collapsed { display:none; }
+.topicrow { margin:4px 0 4px 0; }
+.topicrow a { color:#ff6b6b; margin-right:12px; text-decoration:none; font-size:13px; }
+.topicrow a.active { color:#fff; text-decoration:underline; }
+.typerow a { color:#7cc4ff; margin-right:14px; text-decoration:none; font-size:14px; }
+.typerow a.active { color:#fff; text-decoration:underline; }
+.grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:14px; margin-top:20px; max-width:100%; }
+@media (max-width:1400px){ .grid{ grid-template-columns:repeat(4,minmax(0,1fr));} }
+@media (max-width:1100px){ .grid{ grid-template-columns:repeat(3,minmax(0,1fr));} }
+@media (max-width:800px){ .grid{ grid-template-columns:repeat(2,minmax(0,1fr));} }
+@media (max-width:500px){ .grid{ grid-template-columns:minmax(0,1fr);} }
+.card { background:#1c1c1c; border-radius:10px; padding:10px; display:flex; flex-direction:column; min-width:0; max-width:100%; overflow:hidden; }
+.card.hl { outline:3px solid #ff6b6b; }
+.refcode { font-size:10.5px; color:#666; letter-spacing:.03em; margin-bottom:4px; font-family:monospace; }
+.searchbox { display:flex; gap:6px; align-items:center; margin:4px 0 2px; }
+.searchbox input { background:#1c1c1c; border:1px solid #333; color:#eee; border-radius:6px; padding:5px 8px; font-size:12px; width:140px; }
+.searchbox button { background:#242424; color:#7cc4ff; border:1px solid #333; border-radius:6px; padding:5px 10px; cursor:pointer; font-size:12px; }
+.card video, .card img.main { width:100%; border-radius:6px; background:#000; max-height:340px; object-fit:contain; }
+.vwrap, .cwrap, .imgwrap { position:relative; }
+.playbtn {
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:56px; height:56px; border-radius:50%; background:rgba(0,0,0,.45);
+  display:flex; align-items:center; justify-content:center; cursor:pointer;
+  transition:opacity .15s; pointer-events:auto;
+}
+.playbtn::after {
+  content:""; border-style:solid; border-width:12px 0 12px 20px;
+  border-color:transparent transparent transparent rgba(255,255,255,.85);
+  margin-left:4px;
+}
+.playbtn.hidden { opacity:0; pointer-events:none; }
+.carousel-nav {
+  position:absolute; top:50%; transform:translateY(-50%);
+  width:34px; height:34px; border-radius:50%; background:rgba(0,0,0,.4);
+  color:rgba(255,255,255,.85); display:flex; align-items:center; justify-content:center;
+  cursor:pointer; font-size:18px; user-select:none;
+}
+.carousel-nav.prev { left:6px; }
+.carousel-nav.next { right:6px; }
+.thumbs { display:flex; gap:4px; margin-top:4px; overflow-x:auto; }
+.thumbs img { height:44px; border-radius:4px; cursor:pointer; opacity:.7; }
+.thumbs img.active { opacity:1; outline:2px solid #7cc4ff; }
+.stats { font-size:12px; color:#9c9; margin-top:6px; display:flex; gap:10px; flex-wrap:wrap; }
+.stats span { background:#242424; padding:2px 6px; border-radius:4px; }
+.owner { font-size:11px; color:#888; margin-top:4px; overflow-wrap:break-word; word-break:break-word; }
+.owner a.authorlink { color:#ddd; text-decoration:underline; cursor:pointer; }
+.owner a.authorlink:hover { color:#fff; }
+.section-label { font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:#7cc4ff; margin-top:8px; }
+.text { font-size:12.5px; line-height:1.4; color:#ccc; margin-top:4px; white-space:pre-wrap; overflow-wrap:break-word; word-break:break-word; max-height:160px; max-width:100%; overflow-y:auto; overflow-x:hidden; }
+.note { font-size:12px; color:#e88; }
+a.origlink { font-size:11px; color:#7cc4ff; }
+.selectwrap { position:absolute; top:6px; right:6px; z-index:6; }
+.selectwrap input.selchk { display:none; }
+.selectwrap .selmark {
+  display:block; width:26px; height:26px; border-radius:50%;
+  background:rgba(0,0,0,.5); border:2px solid rgba(255,255,255,.6); cursor:pointer; position:relative;
+}
+.selectwrap input.selchk:checked + .selmark { background:#2ecc71; border-color:#2ecc71; }
+.selectwrap input.selchk:checked + .selmark::after {
+  content:""; position:absolute; left:7px; top:3px; width:7px; height:13px;
+  border:solid white; border-width:0 3px 3px 0; transform:rotate(40deg);
+}
+.selbar {
+  position:fixed; bottom:16px; right:16px; background:#1c1c1c; border:1px solid #333;
+  border-radius:10px; padding:10px 14px; font-size:13px; display:flex; gap:10px; align-items:center; z-index:50;
+}
+.selbar button { background:#2ecc71; color:#111; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; font-size:12px; font-weight:600; }
+.selbar button.secondary { background:#444; color:#eee; }
+.sortbar { display:flex; justify-content:flex-end; gap:8px; margin:0; }
+.sortbar button { background:#242424; color:#7cc4ff; border:1px solid #333; border-radius:6px; padding:5px 10px; cursor:pointer; font-size:12px; }
+.sortbar button.active { color:#fff; border-color:#7cc4ff; }
+@media (max-width:600px){ .sortbar{ justify-content:flex-start; flex-wrap:wrap; } }
+</style>
+</head><body>
+<div class="pageheader">
+<h1>Автор: @ilusha_animal</h1>
+<div class="sortbar">
+<button id="sort-desc" onclick="sortCards('desc')">Сначала новые</button>
+<button id="sort-asc" onclick="sortCards('asc')">Сначала старые</button>
+</div>
+</div>
+<div class="searchbox">
+<input type="text" id="refcodeInput" placeholder="CLI-00042" onkeydown="if(event.key==='Enter')searchByRefCode()">
+<button onclick="searchByRefCode()">Найти по коду</button>
+</div>
+<nav><a class="home" href="../index.html">Все клиенты</a> <a class="home" href="tourherdal_home.html">tourherdal</a></nav>
+<div class="supercat-row"><span class="supercat" id="label-tourherdal_content" onclick="toggleAccordion('tourherdal_content')"><span class="acc-arrow">▾</span> Контент</span><span class="supercat" id="label-tourherdal_theory" onclick="toggleAccordion('tourherdal_theory')"><span class="acc-arrow">▾</span> Теория</span></div>
+<div class="accordion-body" id="acc-tourherdal_content"><div class="topicrow"><a class="" href="tourherdal_content_all.html">Все</a><a class="" href="tourherdal_content_topic_talking_head.html">Говорящая голова</a><a class="" href="tourherdal_content_topic_single_shot.html">Один кадр</a><a class="" href="tourherdal_content_topic_cuts.html">Нарезки</a><a class="" href="tourherdal_content_topic_scripted.html">Игровые</a></div><div class="typerow"><a class="" href="tourherdal_content_all.html">Все</a><a class="" href="tourherdal_content_reels.html">Рилсы</a><a class="" href="tourherdal_content_carousels.html">Карусели</a><a class="" href="tourherdal_content_posts.html">Одиночные посты</a><a class="" href="tourherdal_content_tgposts.html">ТГ-посты</a><a class="" href="tourherdal_content_other.html">Остальное</a></div></div><div class="accordion-body" id="acc-tourherdal_theory"><div class="topicrow"><a class="" href="tourherdal_theory_all.html">Все</a><a class="" href="tourherdal_theory_topic_editing.html">Монтаж</a><a class="" href="tourherdal_theory_topic_fonts.html">Шрифты</a><a class="" href="tourherdal_theory_topic_design.html">Дизайн</a></div><div class="typerow"><a class="" href="tourherdal_theory_all.html">Все</a><a class="" href="tourherdal_theory_reels.html">Рилсы</a><a class="" href="tourherdal_theory_carousels.html">Карусели</a><a class="" href="tourherdal_theory_posts.html">Одиночные посты</a><a class="" href="tourherdal_theory_tgposts.html">ТГ-посты</a><a class="" href="tourherdal_theory_other.html">Остальное</a></div></div>
+<div class="grid">
+<div class="card" id="card-CLI-00078" data-date="2026-07-27T16:04:06+00:00"><div class="refcode">CLI-00078</div><div class="vwrap"><video id="v-DX37WUIMZyD" controls preload="metadata" src="../media/DX37WUIMZyD.mp4" onplay="this.parentElement.querySelector('.playbtn').classList.add('hidden')" onpause="this.parentElement.querySelector('.playbtn').classList.remove('hidden')" onended="this.parentElement.querySelector('.playbtn').classList.remove('hidden')"></video><div class="playbtn" onclick="document.getElementById('v-DX37WUIMZyD').play()"></div><div class="selectwrap"><input type="checkbox" class="selchk" id="chk-DX37WUIMZyD" data-sc="DX37WUIMZyD" onchange="toggleSel('DX37WUIMZyD', this.checked)"><label for="chk-DX37WUIMZyD" class="selmark"></label></div></div><div class="stats"><span>❤ 303</span><span>💬 31</span><span>👁 28.6K</span></div><div class="owner"><a class="authorlink" href="author_ilusha_animal.html">@ilusha_animal</a> · <a class="origlink" href="https://www.instagram.com/reel/DX37WUIMZyD/?igsh=MTE1dWlzNm5wbWIyMg==" target="_blank">оригинал</a></div><div class="section-label">Расшифровка</div><div class="text">Твои ботинки за 30 тысяч просто мусор, если ты надел это. Меня как инженеры исследователи артики просто трясет от этой ошибки. Ведь мембрана в ботинках работает и выводит парт, только если внутри есть давление. Но твой любимый бабушкин подарок сработает как губка. Он будет спитывать под и превращать твое технологичные боты в тяжелое, вонючее болота. В результате, мазоли, гребок или диной ноги. И даже в сухую погоду в своих технологичных ботинках ты будешь хлюпать, как в дешевых резиновых сапогах с рынка. Хочешь дойти до конца маршрута в радости, а не с измученным рецом, тогда запоминай. На синоске только из синтетики или из шерсти миринуса. Но помню, что даже в топовых трекинговых насках и новых ботинках ты можешь не дойти до стоянки. Главный секрет, который спасет твои ноги в следующей части. Оставайся!</div><div class="section-label">Описание</div><div class="text">🏕️А как ухаживать за снарягой, чтобы она служила вечно - читай в посте в закрепе у меня в профиле @ilusha_animal</div></div>
+<div class="card" id="card-CLI-00079" data-date="2026-07-27T16:02:55+00:00"><div class="refcode">CLI-00079</div><div class="vwrap"><video id="v-DZVi0knsrrL" controls preload="metadata" src="../media/DZVi0knsrrL.mp4" onplay="this.parentElement.querySelector('.playbtn').classList.add('hidden')" onpause="this.parentElement.querySelector('.playbtn').classList.remove('hidden')" onended="this.parentElement.querySelector('.playbtn').classList.remove('hidden')"></video><div class="playbtn" onclick="document.getElementById('v-DZVi0knsrrL').play()"></div><div class="selectwrap"><input type="checkbox" class="selchk" id="chk-DZVi0knsrrL" data-sc="DZVi0knsrrL" onchange="toggleSel('DZVi0knsrrL', this.checked)"><label for="chk-DZVi0knsrrL" class="selmark"></label></div></div><div class="stats"><span>❤ 167</span><span>💬 80</span><span>👁 22.3K</span></div><div class="owner"><a class="authorlink" href="author_ilusha_animal.html">@ilusha_animal</a> · <a class="origlink" href="https://www.instagram.com/reel/DZVi0knsrrL/?igsh=MTJ2cG1sZ2gyb2hyZg==" target="_blank">оригинал</a></div><div class="section-label">Расшифровка</div><div class="text">Катаешься на каменных покрышках и считаешь каждую трещинку зубами, поздравляют и превратился в велик в пытошную большинство, забивает колеса до звона, чтобы котила, а потом плачут в кабинете травматолога со стёртым позвоночником. Поедешь поровному асфальту, качай третма сферы и лети как ракета. Но если ты свернул в лесную глушь, на корни, то сдусь до полторашки. Покрышка должна облизывать камни, а не отбивать тебе яйца. Всё, что тверже, для трека, всё, что мягче, для любителей, месить грязь. Ну а как рассчитать давление в покрышках по любую вес, смотри в описании.</div><div class="section-label">Описание</div><div class="text">😵‍💫 отбиваешь пятую точку
+😱 позвоночник выпадает бибы
+😖 колени скрипят и плечи ноют
+
+🥺опять ошибся с давлением в шинах! 
+
+🚲Хватит качать на шару используй калькулятор
+
+🏆Три калькулятора для давления оставил у себя в Telegram канале @ilusha_animal 
+
+А если лень искать, скинь этот видос мне в личку и я пришлю тебе ссылку😉</div></div>
+<div class="card" id="card-CLI-00083" data-date="2026-07-27T15:58:17+00:00"><div class="refcode">CLI-00083</div><div class="vwrap"><video id="v-DLsMaiPKaw_" controls preload="metadata" src="../media/DLsMaiPKaw_.mp4" onplay="this.parentElement.querySelector('.playbtn').classList.add('hidden')" onpause="this.parentElement.querySelector('.playbtn').classList.remove('hidden')" onended="this.parentElement.querySelector('.playbtn').classList.remove('hidden')"></video><div class="playbtn" onclick="document.getElementById('v-DLsMaiPKaw_').play()"></div><div class="selectwrap"><input type="checkbox" class="selchk" id="chk-DLsMaiPKaw_" data-sc="DLsMaiPKaw_" onchange="toggleSel('DLsMaiPKaw_', this.checked)"><label for="chk-DLsMaiPKaw_" class="selmark"></label></div></div><div class="stats"><span>❤ 171.3K</span><span>💬 2.1K</span><span>👁 10486.2K</span></div><div class="owner"><a class="authorlink" href="author_ilusha_animal.html">@ilusha_animal</a> · <a class="origlink" href="https://www.instagram.com/reel/DLsMaiPKaw_/?igsh=MzM4ZHI0Z2lvM2Ru" target="_blank">оригинал</a></div><div class="section-label">Расшифровка</div><div class="text">Как эти весули, их сичем дома, обними руками дерева, и тушенка выйдет сама как по маслу. Опираясь из пиноя на дерево и очищая организм перед сложным восхождением. Королевский трон тебе подойдет любой упавшие дерева. Горда Релс, способ очень стильный, но очень опасный. Посад пять. Его я подглядел у грибцов, в котором скучно в одиночку.</div><div class="section-label">Описание</div><div class="text">Пиши ОТПУСК и получишь гайд с которым ты без заморочек и Долгих подготовок быстро уедешь в крутое путешествие за минимальный бюджет и как можно быстрее пробуешь все способы вылета еды со свистом из ролика</div></div>
+</div>
+<div class="selbar">
+Выбрано: <span id="selcount">0</span>
+<button onclick="downloadSelectedTranscripts()">Скачать txt</button>
+<button class="secondary" onclick="clearSelection()">Сбросить</button>
+</div>
+<script>
+function csSet(sc, idx) {
+  var wrap = document.getElementById('cwrap-' + sc);
+  wrap.dataset.idx = idx;
+  document.getElementById('main-' + sc).src = '../media/' + sc + '_' + idx + '.jpg';
+  wrap.parentElement.querySelectorAll('.thumbs img').forEach(function(t, i) {
+    t.classList.toggle('active', i === idx);
+  });
+}
+function csNav(sc, dir) {
+  var wrap = document.getElementById('cwrap-' + sc);
+  var count = parseInt(wrap.dataset.count, 10);
+  var idx = (parseInt(wrap.dataset.idx, 10) + dir + count) % count;
+  csSet(sc, idx);
+}
+</script>
+<script src="../assets/site.js"></script>
+</body></html>

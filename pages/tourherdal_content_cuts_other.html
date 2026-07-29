@@ -1,0 +1,165 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Тур Хердал — Контент — Нарезки — Остальное</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>%F0%9F%93%81</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root { color-scheme: dark; }
+html, body { max-width:100%; overflow-x:hidden; }
+body { background:#111; color:#eee; font-family:-apple-system,Segoe UI,Arial,sans-serif; margin:0; padding:24px; box-sizing:border-box; }
+*, *::before, *::after { box-sizing:inherit; }
+h1 { font-size:22px; margin-bottom:4px; }
+.pageheader { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
+.pageheader h1 { margin:0; }
+nav { margin-bottom:2px; }
+nav a { color:#7cc4ff; margin-right:14px; text-decoration:none; font-size:14px; }
+nav a.active { color:#fff; text-decoration:underline; }
+nav a.home { color:#ddd; }
+.supercat-row { display:flex; gap:20px; flex-wrap:wrap; margin-bottom:6px; }
+.supercat { color:#6ee7c4; font-weight:700; text-transform:uppercase; letter-spacing:.05em; font-size:13px; cursor:pointer; user-select:none; }
+.acc-arrow { display:inline-block; width:10px; }
+.accordion-body { margin-bottom:8px; }
+.accordion-body.collapsed { display:none; }
+.topicrow { margin:4px 0 4px 0; }
+.topicrow a { color:#ff6b6b; margin-right:12px; text-decoration:none; font-size:13px; }
+.topicrow a.active { color:#fff; text-decoration:underline; }
+.typerow a { color:#7cc4ff; margin-right:14px; text-decoration:none; font-size:14px; }
+.typerow a.active { color:#fff; text-decoration:underline; }
+.grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:14px; margin-top:20px; max-width:100%; }
+@media (max-width:1400px){ .grid{ grid-template-columns:repeat(4,minmax(0,1fr));} }
+@media (max-width:1100px){ .grid{ grid-template-columns:repeat(3,minmax(0,1fr));} }
+@media (max-width:800px){ .grid{ grid-template-columns:repeat(2,minmax(0,1fr));} }
+@media (max-width:500px){ .grid{ grid-template-columns:minmax(0,1fr);} }
+.card { background:#1c1c1c; border-radius:10px; padding:10px; display:flex; flex-direction:column; min-width:0; max-width:100%; overflow:hidden; }
+.card.hl { outline:3px solid #ff6b6b; }
+.refcode { font-size:10.5px; color:#666; letter-spacing:.03em; margin-bottom:4px; font-family:monospace; }
+.searchbox { display:flex; gap:6px; align-items:center; margin:4px 0 2px; }
+.searchbox input { background:#1c1c1c; border:1px solid #333; color:#eee; border-radius:6px; padding:5px 8px; font-size:12px; width:140px; }
+.searchbox button { background:#242424; color:#7cc4ff; border:1px solid #333; border-radius:6px; padding:5px 10px; cursor:pointer; font-size:12px; }
+.card video, .card img.main { width:100%; border-radius:6px; background:#000; max-height:340px; object-fit:contain; }
+.vwrap, .cwrap, .imgwrap { position:relative; }
+.playbtn {
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:56px; height:56px; border-radius:50%; background:rgba(0,0,0,.45);
+  display:flex; align-items:center; justify-content:center; cursor:pointer;
+  transition:opacity .15s; pointer-events:auto;
+}
+.playbtn::after {
+  content:""; border-style:solid; border-width:12px 0 12px 20px;
+  border-color:transparent transparent transparent rgba(255,255,255,.85);
+  margin-left:4px;
+}
+.playbtn.hidden { opacity:0; pointer-events:none; }
+.carousel-nav {
+  position:absolute; top:50%; transform:translateY(-50%);
+  width:34px; height:34px; border-radius:50%; background:rgba(0,0,0,.4);
+  color:rgba(255,255,255,.85); display:flex; align-items:center; justify-content:center;
+  cursor:pointer; font-size:18px; user-select:none;
+}
+.carousel-nav.prev { left:6px; }
+.carousel-nav.next { right:6px; }
+.thumbs { display:flex; gap:4px; margin-top:4px; overflow-x:auto; }
+.thumbs img { height:44px; border-radius:4px; cursor:pointer; opacity:.7; }
+.thumbs img.active { opacity:1; outline:2px solid #7cc4ff; }
+.stats { font-size:12px; color:#9c9; margin-top:6px; display:flex; gap:10px; flex-wrap:wrap; }
+.stats span { background:#242424; padding:2px 6px; border-radius:4px; }
+.owner { font-size:11px; color:#888; margin-top:4px; overflow-wrap:break-word; word-break:break-word; }
+.owner a.authorlink { color:#ddd; text-decoration:underline; cursor:pointer; }
+.owner a.authorlink:hover { color:#fff; }
+.section-label { font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:#7cc4ff; margin-top:8px; }
+.text { font-size:12.5px; line-height:1.4; color:#ccc; margin-top:4px; white-space:pre-wrap; overflow-wrap:break-word; word-break:break-word; max-height:160px; max-width:100%; overflow-y:auto; overflow-x:hidden; }
+.note { font-size:12px; color:#e88; }
+a.origlink { font-size:11px; color:#7cc4ff; }
+.selectwrap { position:absolute; top:6px; right:6px; z-index:6; }
+.selectwrap input.selchk { display:none; }
+.selectwrap .selmark {
+  display:block; width:26px; height:26px; border-radius:50%;
+  background:rgba(0,0,0,.5); border:2px solid rgba(255,255,255,.6); cursor:pointer; position:relative;
+}
+.selectwrap input.selchk:checked + .selmark { background:#2ecc71; border-color:#2ecc71; }
+.selectwrap input.selchk:checked + .selmark::after {
+  content:""; position:absolute; left:7px; top:3px; width:7px; height:13px;
+  border:solid white; border-width:0 3px 3px 0; transform:rotate(40deg);
+}
+.selbar {
+  position:fixed; bottom:16px; right:16px; background:#1c1c1c; border:1px solid #333;
+  border-radius:10px; padding:10px 14px; font-size:13px; display:flex; gap:10px; align-items:center; z-index:50;
+}
+.selbar button { background:#2ecc71; color:#111; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; font-size:12px; font-weight:600; }
+.selbar button.secondary { background:#444; color:#eee; }
+.sortbar { display:flex; justify-content:flex-end; gap:8px; margin:0; }
+.sortbar button { background:#242424; color:#7cc4ff; border:1px solid #333; border-radius:6px; padding:5px 10px; cursor:pointer; font-size:12px; }
+.sortbar button.active { color:#fff; border-color:#7cc4ff; }
+@media (max-width:600px){ .sortbar{ justify-content:flex-start; flex-wrap:wrap; } }
+</style>
+</head><body>
+<div class="pageheader">
+<h1>Тур Хердал — Контент — Нарезки — Остальное</h1>
+<div class="sortbar">
+<button id="sort-desc" onclick="sortCards('desc')">Сначала новые</button>
+<button id="sort-asc" onclick="sortCards('asc')">Сначала старые</button>
+</div>
+</div>
+<div class="searchbox">
+<input type="text" id="refcodeInput" placeholder="CLI-00042" onkeydown="if(event.key==='Enter')searchByRefCode()">
+<button onclick="searchByRefCode()">Найти по коду</button>
+</div>
+<nav><a class="home" href="../index.html">Все клиенты</a> <a class="home" href="tourherdal_home.html">Тур Хердал</a></nav>
+<div class="supercat-row"><span class="supercat" id="label-tourherdal_content" onclick="toggleAccordion('tourherdal_content')"><span class="acc-arrow">▾</span> Контент</span><span class="supercat" id="label-tourherdal_theory" onclick="toggleAccordion('tourherdal_theory')"><span class="acc-arrow">▸</span> Теория</span></div>
+<div class="accordion-body" id="acc-tourherdal_content"><div class="topicrow"><a class="" href="tourherdal_content_other.html">Все</a><a class="" href="tourherdal_content_talking_head_other.html">Говорящая голова</a><a class="" href="tourherdal_content_single_shot_other.html">Один кадр</a><a class="active" href="tourherdal_content_cuts_other.html">Нарезки</a><a class="" href="tourherdal_content_scripted_other.html">Игровые</a></div><div class="typerow"><a class="" href="tourherdal_content_topic_cuts.html">Все</a><a class="" href="tourherdal_content_cuts_reels.html">Рилсы</a><a class="" href="tourherdal_content_cuts_carousels.html">Карусели</a><a class="" href="tourherdal_content_cuts_posts.html">Одиночные посты</a><a class="" href="tourherdal_content_cuts_tgposts.html">ТГ-посты</a><a class="active" href="tourherdal_content_cuts_other.html">Остальное</a></div></div><div class="accordion-body collapsed" id="acc-tourherdal_theory"><div class="topicrow"><a class="" href="tourherdal_theory_all.html">Все</a><a class="" href="tourherdal_theory_topic_editing.html">Монтаж</a><a class="" href="tourherdal_theory_topic_fonts.html">Шрифты</a><a class="" href="tourherdal_theory_topic_design.html">Дизайн</a></div><div class="typerow"><a class="" href="tourherdal_theory_all.html">Все</a><a class="" href="tourherdal_theory_reels.html">Рилсы</a><a class="" href="tourherdal_theory_carousels.html">Карусели</a><a class="" href="tourherdal_theory_posts.html">Одиночные посты</a><a class="" href="tourherdal_theory_tgposts.html">ТГ-посты</a><a class="" href="tourherdal_theory_other.html">Остальное</a></div></div>
+<div class="grid">
+<div class="card" id="card-CLI-00140" data-date="2026-07-24T18:14:51+00:00"><div class="refcode">CLI-00140</div><div class="section-label">Заметка</div><div class="text">1.  Складная чашка. Она супер-легкая, весит всего 21 грамм, раскладывается в разделочную доску, на которой можно нарезать еду. Легко мыть, не жалко потерять.
+2.  Насос-фонарь. Супер удобно надувать коврики. Он мощный, пять килопаскалей, хватит даже на надувание байдарки. Есть удобный карабинчик, можно подвесить и использовать как свет для лагеря. Весит 120 грамм.
+3.  Ультралайт-гамаши. Надеваются поверх кроссовок, и в них не попадает пыль и камушки. Акутально для тех кто ходит в фаст энд лайт походы. Весят всего 50 грамм.
+4.  Накидка от дождя. Три в одном. Она же коврик, она же тент. Весит дофига, целых 400 грамм, зато неубиваемая и не пропускает солнечный свет. Если закрепить поверх палатки вечером, то утром позволяет поспать подольше.
+5.  Стул Тур Хердал. Он легкий – весит 800 грамм, очень удобно складывается комфортно брать с собой в рюкзак и даже просто на прогулку в карман. Стул не тонет, ножки не проваливаются в грунт, потому что тут есть специальная система упоров
+Все это тестил недавно в походе на Тхаче, все пригодилось. А больше обзоров походных вещей у меня в профиле.</div></div>
+<div class="card" id="card-CLI-00160" data-date="2026-07-24T12:22:29+00:00"><div class="refcode">CLI-00160</div><div class="section-label">Заметка</div><div class="text">Расшифровка 6️⃣ (ref6_DYMz1jsoXza.mp4):
+
+То опять утролает вещей для похода. Склотной столик с подноцом. Почти ничего не весь день занимает место в рюкзаке, но очень выручает. Вместе со столиком идет подноц, который можно к нему прикрепить или использовать отдельно. Столик под весом не прогибается. Склотной стул занимает место, как обычно, оседушка. Но сидеть приятнее на стуле, чем на земле. Весить всего 300 грамм, раскладывается за 30 секунд. Классно, вечно, стоянок и привалок. Корманный душ размером почить за жгалку. Весить всего 100 грамм. И какого удовольствия помыться в походе? В комплекте шнул, чтобы вешать надею рван. Сам душ в виде герма мешка. Очерная ткань питывает солнце и нагревает воду. И с регулируемая лейка для напорогоды. Также его можно использовать место конистры в лагере. Полотенцы из микрофибры, суперкомпакная, весит всего 30 грамм. Микрофибра выскает за минуты. Такого размера достаточно, чтобы вытереть тело и лицо. Можно вешать куда угодно. Склотной рюкзак для радиалок, весит 70 грамм. Рюкзак на 30 литров, сделан из репстопа. Ты стоишь лагер и идешь с ним на леке, следовать окрестностям, чтобы не тащить огромный основной рюкзак ради пары вещей. Все эти вещи невероятно маленькие лёгкие, но очень полезные. А больше обзоров, смотрите у меня в профиле.</div></div>
+<div class="card" id="card-CLI-00165" data-date="2026-07-24T12:06:15+00:00"><div class="refcode">CLI-00165</div><div class="section-label">Заметка</div><div class="text">Расшифровка 1️⃣ (ref1_Da0ex4JRD8z.mp4):
+
+Я полечу в Турцию летом. Да, цены на пийки, но зато разгар сезона. А я полечу в октябре. Море теплое, жары нет, туристов меньше, а цены ниже. Полечу на Мальдивы греться зимой. Пускай переплачу, но пляж, как из рекламы Баунти, того стоит. Я полечу на Мальдивы летом. Дожди кратковременные, отдых не портят, а отели делают хорошие скидки. Если во Вьетнам, то в январе или феврале. Идеальная погода. А я полечу во Вьетнам летом, а конкретно в Ньячанг. Там погода в это время отлично, плюс на туре сэкономлю.</div></div>
+<div class="card" id="card-CLI-00166" data-date="2026-07-24T12:02:09+00:00"><div class="refcode">CLI-00166</div><div class="section-label">Заметка</div><div class="text">Без спикера, речи нет (звука вообще нет). Описание для реконструкции:
+
+Разбить бутылку пополам, чтобы получить стеклянный &quot;фонарь&quot; под свечу.
+
+1. Бутылка в руке — целая, обычная стеклянная.
+2. На бутылку в нужном месте (там, где будет линия слома) наматывается шпагат/бечёвка в несколько витков.
+3. Кончик шпагата поджигается зажигалкой — тлеет/горит по всему намотанному кольцу.
+4. Раскалённое кольцо на стекле светится оранжевым (нагрев).
+5. Сразу после нагрева на кольцо льётся холодная вода — от перепада температуры бутылка лопается ровно по линии, низ отделяется от верха.
+6. В получившийся &quot;стакан&quot; (нижняя половина бутылки) ставится свеча на металлической консервной крышке/донышке.
+7. Свеча зажигается внутри стеклянного стакана — получается защищённый от ветра фонарь.
+8. Готовый фонарь подвешивается на верёвках между веток — походный светильник в темноте.
+
+Формат: без слов, только визуал под музыку/звуки. Реплицировать можно с закадровым &quot;смотри&quot; или без комментариев вообще — сама последовательность действий самодостаточна.</div></div>
+<div class="card" id="card-CLI-00245" data-date="2026-07-21T18:47:31+00:00"><div class="refcode">CLI-00245</div><div class="section-label">Заметка</div><div class="text">И Полянских видосов (едим, кафе, продукты покупаем, едем и тд)</div></div>
+<div class="card" id="card-CLI-00246" data-date="2026-07-21T18:47:05+00:00"><div class="refcode">CLI-00246</div><div class="section-label">Заметка</div><div class="text">Как обычных (идем, едем, болтаем, смешно)
+
+Так и красивых?</div></div>
+<div class="card" id="card-CLI-00261" data-date="2026-07-21T18:36:44+00:00"><div class="refcode">CLI-00261</div><div class="section-label">Заметка</div><div class="text">Это сложное видео. Оно залетело благодаря монтажным эффектам</div></div>
+<div class="card" id="card-CLI-00289" data-date="2026-07-21T17:45:51+00:00"><div class="refcode">CLI-00289</div><div class="section-label">Заметка</div><div class="text">Слоу мо и обратный монтаж</div></div>
+</div>
+<div class="selbar">
+Выбрано: <span id="selcount">0</span>
+<button onclick="downloadSelectedTranscripts()">Скачать txt</button>
+<button class="secondary" onclick="clearSelection()">Сбросить</button>
+</div>
+<script>
+function csSet(sc, idx) {
+  var wrap = document.getElementById('cwrap-' + sc);
+  wrap.dataset.idx = idx;
+  document.getElementById('main-' + sc).src = '../media/' + sc + '_' + idx + '.jpg';
+  wrap.parentElement.querySelectorAll('.thumbs img').forEach(function(t, i) {
+    t.classList.toggle('active', i === idx);
+  });
+}
+function csNav(sc, dir) {
+  var wrap = document.getElementById('cwrap-' + sc);
+  var count = parseInt(wrap.dataset.count, 10);
+  var idx = (parseInt(wrap.dataset.idx, 10) + dir + count) % count;
+  csSet(sc, idx);
+}
+</script>
+<script src="../assets/site.js"></script>
+</body></html>

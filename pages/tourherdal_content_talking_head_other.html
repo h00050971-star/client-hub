@@ -1,0 +1,192 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Тур Хердал — Контент — Говорящая голова — Остальное</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>%F0%9F%93%81</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root { color-scheme: dark; }
+html, body { max-width:100%; overflow-x:hidden; }
+body { background:#111; color:#eee; font-family:-apple-system,Segoe UI,Arial,sans-serif; margin:0; padding:24px; box-sizing:border-box; }
+*, *::before, *::after { box-sizing:inherit; }
+h1 { font-size:22px; margin-bottom:4px; }
+.pageheader { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
+.pageheader h1 { margin:0; }
+nav { margin-bottom:2px; }
+nav a { color:#7cc4ff; margin-right:14px; text-decoration:none; font-size:14px; }
+nav a.active { color:#fff; text-decoration:underline; }
+nav a.home { color:#ddd; }
+.supercat-row { display:flex; gap:20px; flex-wrap:wrap; margin-bottom:6px; }
+.supercat { color:#6ee7c4; font-weight:700; text-transform:uppercase; letter-spacing:.05em; font-size:13px; cursor:pointer; user-select:none; }
+.acc-arrow { display:inline-block; width:10px; }
+.accordion-body { margin-bottom:8px; }
+.accordion-body.collapsed { display:none; }
+.topicrow { margin:4px 0 4px 0; }
+.topicrow a { color:#ff6b6b; margin-right:12px; text-decoration:none; font-size:13px; }
+.topicrow a.active { color:#fff; text-decoration:underline; }
+.typerow a { color:#7cc4ff; margin-right:14px; text-decoration:none; font-size:14px; }
+.typerow a.active { color:#fff; text-decoration:underline; }
+.grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:14px; margin-top:20px; max-width:100%; }
+@media (max-width:1400px){ .grid{ grid-template-columns:repeat(4,minmax(0,1fr));} }
+@media (max-width:1100px){ .grid{ grid-template-columns:repeat(3,minmax(0,1fr));} }
+@media (max-width:800px){ .grid{ grid-template-columns:repeat(2,minmax(0,1fr));} }
+@media (max-width:500px){ .grid{ grid-template-columns:minmax(0,1fr);} }
+.card { background:#1c1c1c; border-radius:10px; padding:10px; display:flex; flex-direction:column; min-width:0; max-width:100%; overflow:hidden; }
+.card.hl { outline:3px solid #ff6b6b; }
+.refcode { font-size:10.5px; color:#666; letter-spacing:.03em; margin-bottom:4px; font-family:monospace; }
+.searchbox { display:flex; gap:6px; align-items:center; margin:4px 0 2px; }
+.searchbox input { background:#1c1c1c; border:1px solid #333; color:#eee; border-radius:6px; padding:5px 8px; font-size:12px; width:140px; }
+.searchbox button { background:#242424; color:#7cc4ff; border:1px solid #333; border-radius:6px; padding:5px 10px; cursor:pointer; font-size:12px; }
+.card video, .card img.main { width:100%; border-radius:6px; background:#000; max-height:340px; object-fit:contain; }
+.vwrap, .cwrap, .imgwrap { position:relative; }
+.playbtn {
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:56px; height:56px; border-radius:50%; background:rgba(0,0,0,.45);
+  display:flex; align-items:center; justify-content:center; cursor:pointer;
+  transition:opacity .15s; pointer-events:auto;
+}
+.playbtn::after {
+  content:""; border-style:solid; border-width:12px 0 12px 20px;
+  border-color:transparent transparent transparent rgba(255,255,255,.85);
+  margin-left:4px;
+}
+.playbtn.hidden { opacity:0; pointer-events:none; }
+.carousel-nav {
+  position:absolute; top:50%; transform:translateY(-50%);
+  width:34px; height:34px; border-radius:50%; background:rgba(0,0,0,.4);
+  color:rgba(255,255,255,.85); display:flex; align-items:center; justify-content:center;
+  cursor:pointer; font-size:18px; user-select:none;
+}
+.carousel-nav.prev { left:6px; }
+.carousel-nav.next { right:6px; }
+.thumbs { display:flex; gap:4px; margin-top:4px; overflow-x:auto; }
+.thumbs img { height:44px; border-radius:4px; cursor:pointer; opacity:.7; }
+.thumbs img.active { opacity:1; outline:2px solid #7cc4ff; }
+.stats { font-size:12px; color:#9c9; margin-top:6px; display:flex; gap:10px; flex-wrap:wrap; }
+.stats span { background:#242424; padding:2px 6px; border-radius:4px; }
+.owner { font-size:11px; color:#888; margin-top:4px; overflow-wrap:break-word; word-break:break-word; }
+.owner a.authorlink { color:#ddd; text-decoration:underline; cursor:pointer; }
+.owner a.authorlink:hover { color:#fff; }
+.section-label { font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:#7cc4ff; margin-top:8px; }
+.text { font-size:12.5px; line-height:1.4; color:#ccc; margin-top:4px; white-space:pre-wrap; overflow-wrap:break-word; word-break:break-word; max-height:160px; max-width:100%; overflow-y:auto; overflow-x:hidden; }
+.note { font-size:12px; color:#e88; }
+a.origlink { font-size:11px; color:#7cc4ff; }
+.selectwrap { position:absolute; top:6px; right:6px; z-index:6; }
+.selectwrap input.selchk { display:none; }
+.selectwrap .selmark {
+  display:block; width:26px; height:26px; border-radius:50%;
+  background:rgba(0,0,0,.5); border:2px solid rgba(255,255,255,.6); cursor:pointer; position:relative;
+}
+.selectwrap input.selchk:checked + .selmark { background:#2ecc71; border-color:#2ecc71; }
+.selectwrap input.selchk:checked + .selmark::after {
+  content:""; position:absolute; left:7px; top:3px; width:7px; height:13px;
+  border:solid white; border-width:0 3px 3px 0; transform:rotate(40deg);
+}
+.selbar {
+  position:fixed; bottom:16px; right:16px; background:#1c1c1c; border:1px solid #333;
+  border-radius:10px; padding:10px 14px; font-size:13px; display:flex; gap:10px; align-items:center; z-index:50;
+}
+.selbar button { background:#2ecc71; color:#111; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; font-size:12px; font-weight:600; }
+.selbar button.secondary { background:#444; color:#eee; }
+.sortbar { display:flex; justify-content:flex-end; gap:8px; margin:0; }
+.sortbar button { background:#242424; color:#7cc4ff; border:1px solid #333; border-radius:6px; padding:5px 10px; cursor:pointer; font-size:12px; }
+.sortbar button.active { color:#fff; border-color:#7cc4ff; }
+@media (max-width:600px){ .sortbar{ justify-content:flex-start; flex-wrap:wrap; } }
+</style>
+</head><body>
+<div class="pageheader">
+<h1>Тур Хердал — Контент — Говорящая голова — Остальное</h1>
+<div class="sortbar">
+<button id="sort-desc" onclick="sortCards('desc')">Сначала новые</button>
+<button id="sort-asc" onclick="sortCards('asc')">Сначала старые</button>
+</div>
+</div>
+<div class="searchbox">
+<input type="text" id="refcodeInput" placeholder="CLI-00042" onkeydown="if(event.key==='Enter')searchByRefCode()">
+<button onclick="searchByRefCode()">Найти по коду</button>
+</div>
+<nav><a class="home" href="../index.html">Все клиенты</a> <a class="home" href="tourherdal_home.html">Тур Хердал</a></nav>
+<div class="supercat-row"><span class="supercat" id="label-tourherdal_content" onclick="toggleAccordion('tourherdal_content')"><span class="acc-arrow">▾</span> Контент</span><span class="supercat" id="label-tourherdal_theory" onclick="toggleAccordion('tourherdal_theory')"><span class="acc-arrow">▸</span> Теория</span></div>
+<div class="accordion-body" id="acc-tourherdal_content"><div class="topicrow"><a class="" href="tourherdal_content_other.html">Все</a><a class="active" href="tourherdal_content_talking_head_other.html">Говорящая голова</a><a class="" href="tourherdal_content_single_shot_other.html">Один кадр</a><a class="" href="tourherdal_content_cuts_other.html">Нарезки</a><a class="" href="tourherdal_content_scripted_other.html">Игровые</a></div><div class="typerow"><a class="" href="tourherdal_content_topic_talking_head.html">Все</a><a class="" href="tourherdal_content_talking_head_reels.html">Рилсы</a><a class="" href="tourherdal_content_talking_head_carousels.html">Карусели</a><a class="" href="tourherdal_content_talking_head_posts.html">Одиночные посты</a><a class="" href="tourherdal_content_talking_head_tgposts.html">ТГ-посты</a><a class="active" href="tourherdal_content_talking_head_other.html">Остальное</a></div></div><div class="accordion-body collapsed" id="acc-tourherdal_theory"><div class="topicrow"><a class="" href="tourherdal_theory_all.html">Все</a><a class="" href="tourherdal_theory_topic_editing.html">Монтаж</a><a class="" href="tourherdal_theory_topic_fonts.html">Шрифты</a><a class="" href="tourherdal_theory_topic_design.html">Дизайн</a></div><div class="typerow"><a class="" href="tourherdal_theory_all.html">Все</a><a class="" href="tourherdal_theory_reels.html">Рилсы</a><a class="" href="tourherdal_theory_carousels.html">Карусели</a><a class="" href="tourherdal_theory_posts.html">Одиночные посты</a><a class="" href="tourherdal_theory_tgposts.html">ТГ-посты</a><a class="" href="tourherdal_theory_other.html">Остальное</a></div></div>
+<div class="grid">
+<div class="card" id="card-CLI-00002" data-date="2026-07-28T19:40:01+00:00"><div class="refcode">CLI-00002</div><div class="section-label">Заметка</div><div class="text">Я планирую скоро вам предоставлю в виде сайта, как показывал</div></div>
+<div class="card" id="card-CLI-00064" data-date="2026-07-28T09:32:15+00:00"><div class="refcode">CLI-00064</div><div class="section-label">Заметка</div><div class="text">Вот это видео где двое разговаривают ты говорила супер-знаешь как сделать</div></div>
+<div class="card" id="card-CLI-00077" data-date="2026-07-27T16:04:07+00:00"><div class="refcode">CLI-00077</div><div class="section-label">Заметка</div><div class="text">Щас их все буду на дашборд собирать для вас</div></div>
+<div class="card" id="card-CLI-00140" data-date="2026-07-24T18:14:51+00:00"><div class="refcode">CLI-00140</div><div class="section-label">Заметка</div><div class="text">1.  Складная чашка. Она супер-легкая, весит всего 21 грамм, раскладывается в разделочную доску, на которой можно нарезать еду. Легко мыть, не жалко потерять.
+2.  Насос-фонарь. Супер удобно надувать коврики. Он мощный, пять килопаскалей, хватит даже на надувание байдарки. Есть удобный карабинчик, можно подвесить и использовать как свет для лагеря. Весит 120 грамм.
+3.  Ультралайт-гамаши. Надеваются поверх кроссовок, и в них не попадает пыль и камушки. Акутально для тех кто ходит в фаст энд лайт походы. Весят всего 50 грамм.
+4.  Накидка от дождя. Три в одном. Она же коврик, она же тент. Весит дофига, целых 400 грамм, зато неубиваемая и не пропускает солнечный свет. Если закрепить поверх палатки вечером, то утром позволяет поспать подольше.
+5.  Стул Тур Хердал. Он легкий – весит 800 грамм, очень удобно складывается комфортно брать с собой в рюкзак и даже просто на прогулку в карман. Стул не тонет, ножки не проваливаются в грунт, потому что тут есть специальная система упоров
+Все это тестил недавно в походе на Тхаче, все пригодилось. А больше обзоров походных вещей у меня в профиле.</div></div>
+<div class="card" id="card-CLI-00141" data-date="2026-07-24T18:14:51+00:00"><div class="refcode">CLI-00141</div><div class="section-label">Заметка</div><div class="text">Первый
+
+1. Я пойду в поход в июле – потому тепло и у меня отпуск. А я пойду в поход в конце сентября и возьму отпуск под эти даты – потому что это золотая осень в горах и не так жарко, как раз очень комфортная температура днем.
+2. Я пойду в поход на бзерпинский карниз потому что мне это предложил гид из инстаграма. А я пойду в поход в Абхазии – потому что там реально дикие красивые места и мало народу
+3. Я возьму с собой в поход коврик-пенку потому что он легкий и дешевый. А я возьму надувной коврик – да он чуть тяжелее но он теплый и я на нем нормально высплюсь.
+4. Я куплю походный стул за полторы тыщи на алиэксперссе. А я куплю стул Тур Хердал за 5990 – да он дороже зато легче на 200 грамм, ножки не проваливаются в грунт, есть карман, и в допу не кусают комары так как сделан не из сетки а из плотной непромокаемой ткани. Комар носа не подточит – и да его просто невозможно намочить
+Второй
+
+Я Тур Хердал Младший, я хожу в походы уже сорок лет. И я сейчас я вам расскажу одну историю. Это стул который я назвал Хлитскькъялф, что в переводе с древнескандинавского означает Трон Одина. Я докручиваю этот стул до идеала уже второй год, чтобы он был максимально удобным в походе или просто поездке. Тестирую его в самых безобразных походных и погодных условиях. В общем трачу на него лучшие годы. Я долго был не доволен результатом, но сейчас даже именитые путешественники Маша и продажные блогеры Райдер Хелп говорят что он близок к идеальному походному стулу. 
+
+Почему? Он легкий – весит 800 грамм, он не тонет, ножки не проваливаются в грунт потому что тут есть специальная система упоров, разработанная в НИИ Стулостроения номер 12 имени Остапа Бендера.
+
+Его производят по спецзаказу непосредственно в Асгарде, на заводе АсгардМеталлПромМаш в городе Валлгальске. Каркас из семитысячного алюминия выкован при помощи молота Тора.
+
+В общем я продолжаю экспериментировать и улучшать этот стул. Ведь это не просто походный стул. Это моя история. Которой я делюсь с вами всего за 5990 рублей. Ссылка в описании.
+Третий
+
+Откуда брать энергию после 45 лет?
+
+Как сделать так чтобы спина не болела после 45 лет? 5 пунктов которые я для себя выделил. 
+
+Как в 50 лет вставать утром с кровати с сальто?
+
+1. Первое, очень важно – нужно как следует высыпаться и спать на жестком матрасе. Что позвоночник не посыпался в трусы. А еще я для сна использую маску вот такую вот специальную.
+2. Обязательно занимаемся в зале с тяжелыми весами. И выбираем еще допольнительный вид спорта по душе у меня это велосипед. Я живу в Красной Поляне в Сочи и стараюсь каждый день ездить на велике на работу 9 километров.
+3. На работе каждый час встаю из-за стола спускаюсь на первый этаж и поднимаюсь обратно на пятый. Эта физкультминутка позволяет мне размять суставы и перезагружает мозг.
+4. Хожу в походы в горы, в красивые места, обязательно, чтобы заряжаться энергий. А для походов подбираю легкое снаряжение чтобы не таскать 20-килограммовый рюкзак и не убивать спину.
+5. А еще в поход обязательно беру с собой удобный стул. Когда идем в поход с тяжелым рюкзаком, стул правильный нам помогает вечером после перехода правильно расслабить спину. Это очень важно. Поэтому я завел этот блог чтобы делиться с вами правилдьными походми лайфхаками котоыре использую сам за свой почти 40-летний стаж походника. Подписывайтесь если тоже любите походы.
+
+Четвертый
+
+Нашел такую штуку на маркетплейсе, оч хочу себе такую. Быстро объясню, почему это круче чем обычный мангал, смотри! 
+
+Пятый
+
+Топ пять ультралайт вещей для похода</div></div>
+<div class="card" id="card-CLI-00161" data-date="2026-07-24T12:21:05+00:00"><div class="refcode">CLI-00161</div><div class="section-label">Заметка</div><div class="text">Расшифровка 3️⃣ (идея, мангал) (ref3a_Dac350rKeRu.mp4):
+
+Приветик, смотри, объясню тебе быстро, почему это круче, чем обычный мангал. Костровая система WAV позволяет тебе готовить, как классический шашлык, так стейки, либо же просто готовить на огне, как классический шашлык, готовить на сковородке. Это гораздо больше плюсов, чем в твою мангале, за 300 рублей с пятюрочки. Да, стоит чуть -чуть дороже, но разве оно того не стоит? Смотри, с WAV идет, короче, еще очень крутой чехол. Вот такая вещь, короче, чехол. Смотри, чехол из конваса, 12 сунций. Он пропитан натуральным челином воском и, по сути дела, не впитывает себя воду. Вот такая вещь, я его эксплуатирую уже и в хвост и в грибу на протяжении 6 месяцев, и ему вообще хоть бы хны. Ну и в него помещается вот этот замечательный мангал WAV. Не, ну разве это не круто? По -моему, круче просто не придумать. Так что, если тебя тоже заинтересовало решение для отдыха на природе и для приготовления пищи, то заходи на сайт wavdefizshop .ru для того, чтобы заказывать у нас. До скорого!</div></div>
+<div class="card" id="card-CLI-00162" data-date="2026-07-24T12:18:15+00:00"><div class="refcode">CLI-00162</div><div class="section-label">Заметка</div><div class="text">Расшифровка 5️⃣ (ref5_DbKegMPMBP2.mp4):
+
+Откуда брать энергию после 35 лет? 5 пунктов, я выделил. Первое очень важно, это сон. Вот мне минимум 8 часов, если я меньше поспал, всё у меня весь день на смарку. Снотворные я не пью, я максимально затемняю помещение. В Питере это важно. Используя такую маску для сна купил. И ещё купил тяжёлое одеяло. Ну, кстати, тоже мне понравилось. Второе, спорт. Надо бы больше, но минимум, который стараюсь выполнять, значит, 2 раза в неделю тренировка по теннису. Каждый день в перерывах от компьютера это 100 -200 отжиманий, 20 -30 подтягиваний. Бег, стараюсь бегать один -два раза в неделю по 3 километра. На третий, хороший отдых на выходные. Выходные, когда я не занимаюсь работы, в идеале уезжают, туда где нет связи. В общем, какие -то новые впечатления, новые места. Здесь же про алкоголь, я не принципиальный зожник, я люблю вино, но главное знать меру. В отдел ещё сократ. Пьянство не рождает пороков, оно их обнаруживает. Я говорю, я не доведяю верблюда, мы вообще тем, кто может целую неделю не пить. Питание витамины, я стараюсь не переедать, я не ем сладкое всяких булок, больше ем фруктов и овощей, без какой -то системы. Я когда -то быстро похудел, там была диета, где можно было есть только мясо или рыбу, но вообще без сколько угодно. Витамины пью вот эти комплексные салгар. Так, перед высокими нагрузками, пропилаю вот такой холин -стронг называется. Комплекс из холины и гинка. Улучшает концентрацию внимания, стресса, устойчивость, работоспособность. Холин улучшает работу мозга, а гинка усиливает действия холина. Пятая, самое важная, медицинские чекапы. Я регулярно сдаю кровь в прочие анализы, четко знаю, где у меня есть риски, например, там по холестерину, по демоглобину, и я за этим слежу. Если я чувствую что -то не то, я бегом, бегу делать исследования, даже если какой -нибудь ФГДС в прочей радости. Будьте здоровы, потому что нельзя быть эффективным и счастливым, если не будешь здоровым.</div></div>
+<div class="card" id="card-CLI-00163" data-date="2026-07-24T12:13:12+00:00"><div class="refcode">CLI-00163</div><div class="section-label">Заметка</div><div class="text">Расшифровка 3️⃣пример (ref3b_DYSGHgdoZKs.mp4):
+
+Жизнь ради детей или развод? Смотри. Жить ради детей или развестись и спасти себя. А если правда, не то, не другое. Очень многие семьи живут ради детей. Без любви, без уважения, с холодом, часто ссорятся. Каждый день почти, но дети не глухие. Они же все слышат и учатся не любви, а боли. А есть те, кто разводятся, но делают это с ненавистью. И ломая детей еще сильнее. Проблема не в том, вместе вы или нет. Проблема в том, что видят ваши дети. Если вы вместе, будьте примером любви. Если вы расстались, то будьте примером уважения. Потому что дети запомнят не ваш статус, а вашу модель любви.</div></div>
+<div class="card" id="card-CLI-00164" data-date="2026-07-24T12:08:26+00:00"><div class="refcode">CLI-00164</div><div class="section-label">Заметка</div><div class="text">Расшифровка 2️⃣ (ref2_DWEkO7GisoG.mp4):
+
+Привет, я Рома Мицуба и сейчас я расскажу вам одну историю. Это штаны снег и я долблю и прокачиваю их уже четвертый год подряд. Пичка лучше в фурнитуре. Тестирую в самых безобразных условиях. В общем, трачу на них свое время и кровь. Но если честно, я ни разу не был доволен результатом. Поэтому мы перешли от сторонних производств и будем шить их сами. Экспериментировать, улучшать материалы в фурнитуре. Ведь это не просто штаны. Это моя история.</div></div>
+<div class="card" id="card-CLI-00252" data-date="2026-07-21T18:41:06+00:00"><div class="refcode">CLI-00252</div><div class="section-label">Заметка</div><div class="text">С брендингом, кепка, стул и тд</div></div>
+<div class="card" id="card-CLI-00264" data-date="2026-07-21T18:34:37+00:00"><div class="refcode">CLI-00264</div><div class="section-label">Заметка</div><div class="text">Тут сработало из-за красоты. Нужны похожие кадры - или воровать полностью с ссылкой на автора. Или себя внизу экрана, экран пополам, он вверху ты внизу — и жанр «смотри как красиво»</div></div>
+</div>
+<div class="selbar">
+Выбрано: <span id="selcount">0</span>
+<button onclick="downloadSelectedTranscripts()">Скачать txt</button>
+<button class="secondary" onclick="clearSelection()">Сбросить</button>
+</div>
+<script>
+function csSet(sc, idx) {
+  var wrap = document.getElementById('cwrap-' + sc);
+  wrap.dataset.idx = idx;
+  document.getElementById('main-' + sc).src = '../media/' + sc + '_' + idx + '.jpg';
+  wrap.parentElement.querySelectorAll('.thumbs img').forEach(function(t, i) {
+    t.classList.toggle('active', i === idx);
+  });
+}
+function csNav(sc, dir) {
+  var wrap = document.getElementById('cwrap-' + sc);
+  var count = parseInt(wrap.dataset.count, 10);
+  var idx = (parseInt(wrap.dataset.idx, 10) + dir + count) % count;
+  csSet(sc, idx);
+}
+</script>
+<script src="../assets/site.js"></script>
+</body></html>
