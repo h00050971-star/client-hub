@@ -95,7 +95,7 @@ a.origlink { font-size:11px; color:#7cc4ff; }
 <nav><a class="home" href="../index.html">Все клиенты</a></nav>
 <h1>Риэлторы ЮДВ</h1>
 <div class="searchbox">
-<input type="text" id="refcodeInput" placeholder="CLI-00042" onkeydown="if(event.key==='Enter')searchByRefCode()">
+<input type="text" id="refcodeInput" name="refcode-search" placeholder="CLI-00042" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore data-form-type="other" onkeydown="if(event.key==='Enter')searchByRefCode()">
 <button onclick="searchByRefCode()">Найти по коду</button>
 </div>
 <div class="supercat-row"><span class="supercat" id="label-yudv_content" onclick="toggleAccordion('yudv_content')"><span class="acc-arrow">▾</span> Контент</span><span class="supercat" id="label-yudv_theory" onclick="toggleAccordion('yudv_theory')"><span class="acc-arrow">▾</span> Теория</span></div>
