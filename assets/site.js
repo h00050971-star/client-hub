@@ -211,6 +211,21 @@ function sortCards(dir){
   if(descBtn) descBtn.classList.toggle('active', dir === 'desc');
   if(ascBtn) ascBtn.classList.toggle('active', dir === 'asc');
 }
+function sortByShot(mode){
+  var grid = document.querySelector('.grid');
+  if(!grid) return;
+  var cards = Array.prototype.slice.call(grid.children);
+  cards.sort(function(a,b){
+    var sa = a.classList.contains('shot') ? 1 : 0;
+    var sb = b.classList.contains('shot') ? 1 : 0;
+    return mode === 'shot' ? (sb - sa) : (sa - sb);
+  });
+  cards.forEach(function(c){ grid.appendChild(c); });
+  var unshotBtn = document.getElementById('sort-unshot');
+  var shotBtn = document.getElementById('sort-shot');
+  if(unshotBtn) unshotBtn.classList.toggle('active', mode === 'unshot');
+  if(shotBtn) shotBtn.classList.toggle('active', mode === 'shot');
+}
 document.addEventListener('DOMContentLoaded', function(){
   restoreSelUI();
   restoreShotUI();

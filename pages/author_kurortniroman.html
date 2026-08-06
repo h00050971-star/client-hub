@@ -10,22 +10,26 @@ body { background:#111; color:#eee; font-family:-apple-system,Segoe UI,Arial,san
 h1 { font-size:22px; margin-bottom:4px; }
 .pageheader { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
 .pageheader h1 { margin:0; }
-nav { margin-bottom:2px; }
-nav a { color:#7cc4ff; margin-right:14px; text-decoration:none; font-size:14px; }
-nav a.active { color:#fff; text-decoration:underline; }
+.toolbar { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; margin:6px 0 16px; }
+nav { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:0; }
+nav a { background:#1a1a1a; border:1px solid #2a2a2a; color:#7cc4ff; padding:6px 14px; border-radius:20px; text-decoration:none; font-size:13px; transition:background .15s,border-color .15s; }
+nav a:hover { border-color:#4a4a4a; }
+nav a.active { background:#2a2a2a; color:#fff; border-color:#555; }
 nav a.home { color:#ddd; }
-nav a.shotnav { color:#ff6b6b; }
-nav a.shotnav.active { color:#fff; text-decoration:underline; }
-.supercat-row { display:flex; gap:20px; flex-wrap:wrap; margin-bottom:6px; }
+nav a.shotnav { color:#ff6b6b; border-color:rgba(255,107,107,.25); }
+nav a.shotnav.active { background:#3a1f1f; color:#fff; border-color:#ff6b6b; }
+.filterpanel { background:#181818; border:1px solid #262626; border-radius:12px; padding:14px 18px; margin-bottom:20px; }
+.supercat-row { display:flex; gap:24px; flex-wrap:wrap; }
 .supercat { color:#6ee7c4; font-weight:700; text-transform:uppercase; letter-spacing:.05em; font-size:13px; cursor:pointer; user-select:none; }
 .acc-arrow { display:inline-block; width:10px; }
-.accordion-body { margin-bottom:8px; }
+.accordion-body { margin-top:4px; padding-top:12px; border-top:1px solid #252525; }
 .accordion-body.collapsed { display:none; }
-.topicrow { margin:4px 0 4px 0; }
-.topicrow a { color:#ff6b6b; margin-right:12px; text-decoration:none; font-size:13px; }
-.topicrow a.active { color:#fff; text-decoration:underline; }
-.typerow a { color:#7cc4ff; margin-right:14px; text-decoration:none; font-size:14px; }
-.typerow a.active { color:#fff; text-decoration:underline; }
+.topicrow, .typerow { display:flex; flex-wrap:wrap; gap:8px; margin:5px 0; }
+.topicrow a, .typerow a { background:#222; border:1px solid #2c2c2c; padding:4px 12px; border-radius:14px; text-decoration:none; font-size:12.5px; transition:background .15s,border-color .15s; }
+.topicrow a { color:#ff9f9f; }
+.typerow a { color:#a8d8ff; }
+.topicrow a.active, .typerow a.active { background:#333; color:#fff; border-color:#666; }
+.topicrow a:hover, .typerow a:hover { background:#282828; }
 .grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:14px; margin-top:20px; max-width:100%; }
 @media (max-width:1400px){ .grid{ grid-template-columns:repeat(4,minmax(0,1fr));} }
 @media (max-width:1100px){ .grid{ grid-template-columns:repeat(3,minmax(0,1fr));} }
@@ -48,7 +52,7 @@ nav a.shotnav.active { color:#fff; text-decoration:underline; }
 }
 .card.shot { opacity:.6; }
 .refcode { font-size:10.5px; color:#666; letter-spacing:.03em; margin-bottom:4px; font-family:monospace; }
-.searchbox { display:flex; gap:6px; align-items:center; margin:4px 0 2px; }
+.searchbox { display:flex; gap:6px; align-items:center; margin:0; }
 .searchbox input { background:#1c1c1c; border:1px solid #333; color:#eee; border-radius:6px; padding:5px 8px; font-size:12px; width:140px; }
 .searchbox button { background:#242424; color:#7cc4ff; border:1px solid #333; border-radius:6px; padding:5px 10px; cursor:pointer; font-size:12px; }
 .card video, .card img.main { width:100%; border-radius:6px; background:#000; max-height:340px; object-fit:contain; }
@@ -103,9 +107,12 @@ a.origlink { font-size:11px; color:#7cc4ff; }
 .selbar button { background:#2ecc71; color:#111; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; font-size:12px; font-weight:600; }
 .selbar button.secondary { background:#444; color:#eee; }
 .selbar button.teleprompter { background:#ff9800; color:#111; }
-.sortbar { display:flex; justify-content:flex-end; gap:8px; margin:0; }
+.sortbar { display:flex; justify-content:flex-end; align-items:center; gap:8px; margin:0; }
 .sortbar button { background:#242424; color:#7cc4ff; border:1px solid #333; border-radius:6px; padding:5px 10px; cursor:pointer; font-size:12px; }
 .sortbar button.active { color:#fff; border-color:#7cc4ff; }
+.sortdiv { width:1px; align-self:stretch; background:#333; margin:0 2px; }
+.sortbar #sort-unshot, .sortbar #sort-shot { color:#ff9f9f; }
+.sortbar #sort-unshot.active, .sortbar #sort-shot.active { color:#fff; border-color:#ff6b6b; }
 @media (max-width:600px){ .sortbar{ justify-content:flex-start; flex-wrap:wrap; } }
 </style>
 </head><body>
@@ -114,15 +121,13 @@ a.origlink { font-size:11px; color:#7cc4ff; }
 <div class="sortbar">
 <button id="sort-desc" onclick="sortCards('desc')">Сначала новые</button>
 <button id="sort-asc" onclick="sortCards('asc')">Сначала старые</button>
+
 </div>
 </div>
-<div class="searchbox">
+<div class="toolbar"><nav><a class="home" href="../index.html">Все клиенты</a><a class="home" href="tourherdal_home.html">tourherdal</a></nav><div class="searchbox">
 <input type="text" id="refcodeInput" name="refcode-search" placeholder="CLI-00042" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore data-form-type="other" onkeydown="if(event.key==='Enter')searchByRefCode()">
 <button onclick="searchByRefCode()">Найти по коду</button>
-</div>
-<nav><a class="home" href="../index.html">Все клиенты</a> <a class="home" href="tourherdal_home.html">tourherdal</a></nav>
-<div class="supercat-row"><span class="supercat" id="label-tourherdal_content" onclick="toggleAccordion('tourherdal_content')"><span class="acc-arrow">▾</span> Контент</span><span class="supercat" id="label-tourherdal_theory" onclick="toggleAccordion('tourherdal_theory')"><span class="acc-arrow">▾</span> Теория</span></div>
-<div class="accordion-body" id="acc-tourherdal_content"><div class="topicrow"><a class="" href="tourherdal_content_all.html">Все</a><a class="" href="tourherdal_content_topic_talking_head.html">Говорящая голова</a><a class="" href="tourherdal_content_topic_single_shot.html">Один кадр</a><a class="" href="tourherdal_content_topic_cuts.html">Нарезки</a><a class="" href="tourherdal_content_topic_scripted.html">Игровые</a></div><div class="typerow"><a class="" href="tourherdal_content_all.html">Все</a><a class="" href="tourherdal_content_reels.html">Рилсы</a><a class="" href="tourherdal_content_carousels.html">Карусели</a><a class="" href="tourherdal_content_posts.html">Одиночные посты</a><a class="" href="tourherdal_content_tgposts.html">ТГ-посты</a><a class="" href="tourherdal_content_other.html">Остальное</a></div></div><div class="accordion-body" id="acc-tourherdal_theory"><div class="topicrow"><a class="" href="tourherdal_theory_all.html">Все</a><a class="" href="tourherdal_theory_topic_editing.html">Монтаж</a><a class="" href="tourherdal_theory_topic_fonts.html">Шрифты</a><a class="" href="tourherdal_theory_topic_design.html">Дизайн</a></div><div class="typerow"><a class="" href="tourherdal_theory_all.html">Все</a><a class="" href="tourherdal_theory_reels.html">Рилсы</a><a class="" href="tourherdal_theory_carousels.html">Карусели</a><a class="" href="tourherdal_theory_posts.html">Одиночные посты</a><a class="" href="tourherdal_theory_tgposts.html">ТГ-посты</a><a class="" href="tourherdal_theory_other.html">Остальное</a></div></div>
+</div></div><div class="filterpanel"><div class="supercat-row"><span class="supercat" id="label-tourherdal_content" onclick="toggleAccordion('tourherdal_content')"><span class="acc-arrow">▾</span> Контент</span><span class="supercat" id="label-tourherdal_theory" onclick="toggleAccordion('tourherdal_theory')"><span class="acc-arrow">▾</span> Теория</span></div><div class="accordion-body" id="acc-tourherdal_content"><div class="topicrow"><a class="" href="tourherdal_content_all.html">Все</a><a class="" href="tourherdal_content_topic_talking_head.html">Говорящая голова</a><a class="" href="tourherdal_content_topic_single_shot.html">Один кадр</a><a class="" href="tourherdal_content_topic_cuts.html">Нарезки</a><a class="" href="tourherdal_content_topic_scripted.html">Игровые</a></div><div class="typerow"><a class="" href="tourherdal_content_all.html">Все</a><a class="" href="tourherdal_content_reels.html">Рилсы</a><a class="" href="tourherdal_content_carousels.html">Карусели</a><a class="" href="tourherdal_content_posts.html">Одиночные посты</a><a class="" href="tourherdal_content_tgposts.html">ТГ-посты</a><a class="" href="tourherdal_content_other.html">Остальное</a></div></div><div class="accordion-body" id="acc-tourherdal_theory"><div class="topicrow"><a class="" href="tourherdal_theory_all.html">Все</a><a class="" href="tourherdal_theory_topic_editing.html">Монтаж</a><a class="" href="tourherdal_theory_topic_fonts.html">Шрифты</a><a class="" href="tourherdal_theory_topic_design.html">Дизайн</a></div><div class="typerow"><a class="" href="tourherdal_theory_all.html">Все</a><a class="" href="tourherdal_theory_reels.html">Рилсы</a><a class="" href="tourherdal_theory_carousels.html">Карусели</a><a class="" href="tourherdal_theory_posts.html">Одиночные посты</a><a class="" href="tourherdal_theory_tgposts.html">ТГ-посты</a><a class="" href="tourherdal_theory_other.html">Остальное</a></div></div></div>
 <div class="grid">
 <div class="card" id="card-CLI-00464" data-date="2026-08-01T06:52:44+00:00"><div class="refcode">CLI-00464</div><div class="vwrap"><video id="v-DYaJH-6NTLt" controls preload="metadata" src="../media/DYaJH-6NTLt.mp4" onplay="this.parentElement.querySelector('.playbtn').classList.add('hidden')" onpause="this.parentElement.querySelector('.playbtn').classList.remove('hidden')" onended="this.parentElement.querySelector('.playbtn').classList.remove('hidden')"></video><div class="playbtn" onclick="document.getElementById('v-DYaJH-6NTLt').play()"></div><div class="selectwrap"><input type="checkbox" class="selchk" id="chk-DYaJH-6NTLt" data-sc="DYaJH-6NTLt" onchange="toggleSel('DYaJH-6NTLt', this.checked)"><label for="chk-DYaJH-6NTLt" class="selmark"></label></div></div><div class="stats"><span>❤ 32.7K</span><span>💬 303</span><span>👁 503.8K</span></div><div class="owner"><a class="authorlink" href="author_kurortniroman.html">@kurortniroman</a> · <a class="origlink" href="https://www.instagram.com/reel/DYaJH-6NTLt/" target="_blank">оригинал</a></div><div class="section-label">Расшифровка</div><div class="text">Рекрасный ут</div><div class="section-label">Описание</div><div class="text">я догоню</div></div>
 </div>
