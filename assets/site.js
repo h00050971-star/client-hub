@@ -91,6 +91,7 @@ async function sendToSufler(){
   document.body.appendChild(a);
   a.click();
   a.remove();
+  clearSelection();
   toast(errors ? ('Отправлено, но ' + errors + ' из ' + sel.length + ' без текста') : 'Отправлено на суфлёр ✓ (суфлёр должен быть открыт на компе)', errors > 0);
 }
 var _refIndexCache = null;
