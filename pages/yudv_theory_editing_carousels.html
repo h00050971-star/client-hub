@@ -14,6 +14,8 @@ nav { margin-bottom:2px; }
 nav a { color:#7cc4ff; margin-right:14px; text-decoration:none; font-size:14px; }
 nav a.active { color:#fff; text-decoration:underline; }
 nav a.home { color:#ddd; }
+nav a.shotnav { color:#ff6b6b; }
+nav a.shotnav.active { color:#fff; text-decoration:underline; }
 .supercat-row { display:flex; gap:20px; flex-wrap:wrap; margin-bottom:6px; }
 .supercat { color:#6ee7c4; font-weight:700; text-transform:uppercase; letter-spacing:.05em; font-size:13px; cursor:pointer; user-select:none; }
 .acc-arrow { display:inline-block; width:10px; }
@@ -29,8 +31,22 @@ nav a.home { color:#ddd; }
 @media (max-width:1100px){ .grid{ grid-template-columns:repeat(3,minmax(0,1fr));} }
 @media (max-width:800px){ .grid{ grid-template-columns:repeat(2,minmax(0,1fr));} }
 @media (max-width:500px){ .grid{ grid-template-columns:minmax(0,1fr);} }
-.card { background:#1c1c1c; border-radius:10px; padding:10px; display:flex; flex-direction:column; min-width:0; max-width:100%; overflow:hidden; }
+.card { position:relative; background:#1c1c1c; border-radius:10px; padding:10px; display:flex; flex-direction:column; min-width:0; max-width:100%; overflow:hidden; }
 .card.hl { outline:3px solid #ff6b6b; }
+.shotbtn {
+  position:absolute; top:6px; left:6px; z-index:8; width:26px; height:26px; border-radius:50%;
+  background:rgba(20,20,20,.75); border:2px solid #ff4444; color:#ff4444; font-size:14px; font-weight:700;
+  line-height:22px; text-align:center; cursor:pointer; padding:0;
+}
+.shotbtn:hover { background:#ff4444; color:#fff; }
+.card.shot .shotbtn { background:#ff4444; color:#fff; }
+.card.shot::after {
+  content:""; position:absolute; inset:0; pointer-events:none; z-index:7; border-radius:10px;
+  background:
+    linear-gradient(to top right, transparent calc(50% - 1.5px), #ff4444 calc(50% - 1.5px), #ff4444 calc(50% + 1.5px), transparent calc(50% + 1.5px)),
+    linear-gradient(to top left, transparent calc(50% - 1.5px), #ff4444 calc(50% - 1.5px), #ff4444 calc(50% + 1.5px), transparent calc(50% + 1.5px));
+}
+.card.shot { opacity:.6; }
 .refcode { font-size:10.5px; color:#666; letter-spacing:.03em; margin-bottom:4px; font-family:monospace; }
 .searchbox { display:flex; gap:6px; align-items:center; margin:4px 0 2px; }
 .searchbox input { background:#1c1c1c; border:1px solid #333; color:#eee; border-radius:6px; padding:5px 8px; font-size:12px; width:140px; }
@@ -104,7 +120,7 @@ a.origlink { font-size:11px; color:#7cc4ff; }
 <input type="text" id="refcodeInput" name="refcode-search" placeholder="CLI-00042" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore data-form-type="other" onkeydown="if(event.key==='Enter')searchByRefCode()">
 <button onclick="searchByRefCode()">Найти по коду</button>
 </div>
-<nav><a class="home" href="../index.html">Все клиенты</a> <a class="home" href="yudv_home.html">Риэлторы ЮДВ</a></nav>
+<nav><a class="home" href="../index.html">Все клиенты</a> <a class="home" href="yudv_home.html">Риэлторы ЮДВ</a><a class="home shotnav" href="yudv_snyato.html">✕ Снято</a></nav>
 <div class="supercat-row"><span class="supercat" id="label-yudv_content" onclick="toggleAccordion('yudv_content')"><span class="acc-arrow">▸</span> Контент</span><span class="supercat" id="label-yudv_theory" onclick="toggleAccordion('yudv_theory')"><span class="acc-arrow">▾</span> Теория</span></div>
 <div class="accordion-body collapsed" id="acc-yudv_content"><div class="topicrow"><a class="" href="yudv_content_all.html">Все</a><a class="" href="yudv_content_topic_talking_head.html">Говорящая голова</a><a class="" href="yudv_content_topic_single_shot.html">Один кадр</a><a class="" href="yudv_content_topic_cuts.html">Нарезки</a><a class="" href="yudv_content_topic_scripted.html">Игровые</a></div><div class="typerow"><a class="" href="yudv_content_all.html">Все</a><a class="" href="yudv_content_reels.html">Рилсы</a><a class="" href="yudv_content_carousels.html">Карусели</a><a class="" href="yudv_content_posts.html">Одиночные посты</a><a class="" href="yudv_content_tgposts.html">ТГ-посты</a><a class="" href="yudv_content_other.html">Остальное</a></div></div><div class="accordion-body" id="acc-yudv_theory"><div class="topicrow"><a class="" href="yudv_theory_carousels.html">Все</a><a class="active" href="yudv_theory_editing_carousels.html">Монтаж</a><a class="" href="yudv_theory_fonts_carousels.html">Шрифты</a><a class="" href="yudv_theory_design_carousels.html">Дизайн</a></div><div class="typerow"><a class="" href="yudv_theory_topic_editing.html">Все</a><a class="" href="yudv_theory_editing_reels.html">Рилсы</a><a class="active" href="yudv_theory_editing_carousels.html">Карусели</a><a class="" href="yudv_theory_editing_posts.html">Одиночные посты</a><a class="" href="yudv_theory_editing_tgposts.html">ТГ-посты</a><a class="" href="yudv_theory_editing_other.html">Остальное</a></div></div>
 <div class="grid">
@@ -132,6 +148,7 @@ function csNav(sc, dir) {
   var idx = (parseInt(wrap.dataset.idx, 10) + dir + count) % count;
   csSet(sc, idx);
 }
+var SITE_SLUG = "yudv";
 </script>
 <script src="../assets/site.js"></script>
 </body></html>

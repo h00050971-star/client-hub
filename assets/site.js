@@ -109,6 +109,47 @@ async function addToSufler(){
   clearSelection();
   toast(res.errors ? ('Добавлено, но ' + res.errors + ' из ' + res.total + ' без текста') : 'Добавлено в суфлёр ✓ (суфлёр должен быть открыт на компе)', res.errors > 0);
 }
+function getShotSet(){
+  try { return JSON.parse(localStorage.getItem('shot_items')||'{}'); } catch(e){ return {}; }
+}
+function setShotLocal(key, val){
+  var s = getShotSet();
+  if(val) s[key] = true; else delete s[key];
+  localStorage.setItem('shot_items', JSON.stringify(s));
+}
+function toggleShot(key, btn){
+  var cur = getShotSet()[key] === true;
+  var next = !cur;
+  setShotLocal(key, next);
+  var card = document.getElementById('card-' + key) || (btn ? btn.closest('.card') : null);
+  if(!card){
+    document.querySelectorAll('.card[data-shotkey]').forEach(function(c){
+      if(c.dataset.shotkey === key) card = c;
+    });
+  }
+  if(card) card.classList.toggle('shot', next);
+  if(btn) btn.innerHTML = next ? '&#8635;' : '&#10005;';
+  var slug = (typeof SITE_SLUG !== 'undefined') ? SITE_SLUG : 'unknown';
+  var blob = new Blob([next ? 'mark' : 'unmark'], {type:'text/plain;charset=utf-8'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'snyato--client-hub--' + slug + '--' + key + '--' + Date.now() + '.txt';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  toast(next ? 'Отмечено «Снято» ✓' : 'Метка «Снято» снята ✓');
+}
+function restoreShotUI(){
+  var shots = getShotSet();
+  document.querySelectorAll('.card[data-shotkey]').forEach(function(card){
+    var key = card.dataset.shotkey;
+    if(!(key in shots)) return;
+    var next = shots[key] === true;
+    card.classList.toggle('shot', next);
+    var btn = card.querySelector('.shotbtn');
+    if(btn) btn.innerHTML = next ? '&#8635;' : '&#10005;';
+  });
+}
 var _refIndexCache = null;
 async function getRefIndex(){
   if(_refIndexCache) return _refIndexCache;
@@ -172,6 +213,7 @@ function sortCards(dir){
 }
 document.addEventListener('DOMContentLoaded', function(){
   restoreSelUI();
+  restoreShotUI();
   sortCards('desc');
   highlightFromHash();
 });
