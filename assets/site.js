@@ -66,10 +66,10 @@ async function downloadSelectedTranscripts(){
   a.remove();
   toast(errors ? ('Файл скачан, но ' + errors + ' из ' + sel.length + ' без текста') : 'Файл скачан ✓', errors > 0);
 }
-async function sendToSufler(){
+async function _collectSelectedTexts(label){
   var sel = getSelected();
-  if(!sel.length){ toast('Ничего не выбрано', true); return; }
-  toast('Собираю тексты на суфлёр (' + sel.length + ')...');
+  if(!sel.length){ toast('Ничего не выбрано', true); return null; }
+  toast(label + ' (' + sel.length + ')...');
   var parts = [];
   var errors = 0;
   for (var i=0;i<sel.length;i++){
@@ -83,16 +83,31 @@ async function sendToSufler(){
       errors++;
     }
   }
-  if(!parts.length){ toast('Нет текста ни у одного выбранного', true); return; }
-  var blob = new Blob([parts.join('\n\n')], {type:'text/plain;charset=utf-8'});
+  if(!parts.length){ toast('Нет текста ни у одного выбранного', true); return null; }
+  return {text: parts.join('\n\n'), errors: errors, total: sel.length};
+}
+function _downloadForSufler(text, filenamePrefix){
+  var blob = new Blob([text], {type:'text/plain;charset=utf-8'});
   var a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'na_sufler_' + Date.now() + '.txt';
+  a.download = filenamePrefix + '_' + Date.now() + '.txt';
   document.body.appendChild(a);
   a.click();
   a.remove();
+}
+async function sendToSufler(){
+  var res = await _collectSelectedTexts('Собираю тексты на суфлёр');
+  if(!res) return;
+  _downloadForSufler(res.text, 'na_sufler');
   clearSelection();
-  toast(errors ? ('Отправлено, но ' + errors + ' из ' + sel.length + ' без текста') : 'Отправлено на суфлёр ✓ (суфлёр должен быть открыт на компе)', errors > 0);
+  toast(res.errors ? ('Отправлено, но ' + res.errors + ' из ' + res.total + ' без текста') : 'Отправлено на суфлёр ✓ (суфлёр должен быть открыт на компе)', res.errors > 0);
+}
+async function addToSufler(){
+  var res = await _collectSelectedTexts('Собираю тексты для добавления в суфлёр');
+  if(!res) return;
+  _downloadForSufler(res.text, 'dobavit_sufler');
+  clearSelection();
+  toast(res.errors ? ('Добавлено, но ' + res.errors + ' из ' + res.total + ' без текста') : 'Добавлено в суфлёр ✓ (суфлёр должен быть открыт на компе)', res.errors > 0);
 }
 var _refIndexCache = null;
 async function getRefIndex(){
