@@ -52,13 +52,15 @@ nav a:hover { border-color:#4a4a4a; }
 
 .addform { display:none; margin-bottom:10px; background:#202020; border:1px solid #333; border-radius:8px; padding:10px; }
 .addform.open { display:block; }
-.addform input, .addform textarea {
+.addform input, .addform textarea, .editform input, .editform textarea {
   width:100%; background:#181818; border:1px solid #333; color:#eee; border-radius:6px;
   padding:7px 9px; font-size:12.5px; font-family:inherit; margin-bottom:6px; resize:vertical;
+  line-height:1.45;
 }
-.addform .btns { display:flex; gap:6px; }
-.addform button { background:#2ecc71; color:#111; border:none; border-radius:6px; padding:5px 11px; cursor:pointer; font-size:12px; font-weight:600; font-family:inherit; }
-.addform button.cancel { background:#3a3a3a; color:#ccc; font-weight:400; }
+.addform .btns, .editform .btns { display:flex; gap:6px; flex-wrap:wrap; }
+.addform button, .editform button { background:#2ecc71; color:#111; border:none; border-radius:6px; padding:5px 11px; cursor:pointer; font-size:12px; font-weight:600; font-family:inherit; }
+.addform button.cancel, .editform button.cancel { background:#3a3a3a; color:#ccc; font-weight:400; }
+.editform button.revert { background:#4a3a2a; color:#ffb877; font-weight:400; }
 
 .tiles { display:flex; flex-direction:column; gap:8px; }
 .tile {
@@ -80,6 +82,7 @@ nav a:hover { border-color:#4a4a4a; }
 .trow { display:flex; align-items:center; gap:6px; margin-bottom:4px; }
 .num { font-family:monospace; font-size:10px; color:#5c5c5c; letter-spacing:.03em; }
 .own-badge { font-size:9.5px; color:#c9a3ff; border:1px solid #4a3a63; border-radius:4px; padding:1px 5px; }
+.edited-badge { font-size:9.5px; color:#ffb877; border:1px solid #5a4426; border-radius:4px; padding:1px 5px; }
 .trow .spacer { flex:1; }
 .chk { width:16px; height:16px; border-radius:4px; border:1.5px solid #555; background:#1a1a1a; cursor:pointer; flex:0 0 auto; position:relative; }
 .chk:hover { border-color:#2ecc71; }
@@ -90,6 +93,7 @@ nav a:hover { border-color:#4a4a4a; }
 .minibtn:hover { color:#aaa; }
 .minibtn.on { color:#2ecc71; }
 .minibtn.del:hover { color:#ff6b6b; }
+.minibtn.edit:hover { color:#ffb877; }
 
 .hook { display:block; cursor:pointer; }
 .hook .em { margin-right:5px; }
@@ -103,6 +107,9 @@ nav a:hover { border-color:#4a4a4a; }
   font-size:12.3px; line-height:1.55; color:#b6b6b6; white-space:pre-wrap;
 }
 .script.open { display:block; }
+.editform { display:none; margin-top:6px; }
+.editform.open { display:block; }
+.tile.editing .hook, .tile.editing .more, .tile.editing .script { display:none; }
 
 .selbar {
   position:fixed; bottom:16px; right:16px; background:#1c1c1c; border:1px solid #333;
@@ -112,7 +119,17 @@ nav a:hover { border-color:#4a4a4a; }
 .selbar.show { display:flex; }
 .selbar button { background:#2ecc71; color:#111; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; font-size:12px; font-weight:600; font-family:inherit; }
 .selbar button.secondary { background:#444; color:#eee; font-weight:400; }
+.selbar button.teleprompter { background:#ff9800; color:#111; }
 @media (max-width:600px){ .selbar { left:16px; right:16px; justify-content:center; flex-wrap:wrap; } }
+
+#toastbox {
+  position:fixed; left:50%; bottom:80px; transform:translateX(-50%);
+  background:#222; border:1px solid #3a3a3a; color:#eee; border-radius:8px;
+  padding:10px 16px; font-size:13px; z-index:100; opacity:0; pointer-events:none;
+  transition:opacity .2s; max-width:90vw; text-align:center;
+}
+#toastbox.show { opacity:1; }
+#toastbox.err { border-color:#ff6b6b; color:#ffb3b3; }
 </style>
 </head><body>
 
@@ -155,33 +172,56 @@ nav a:hover { border-color:#4a4a4a; }
 <div class="selbar" id="selbar">
   Выбрано: <span id="selCount">0</span>
   <button onclick="downloadSelected()">Скачать txt</button>
+  <button class="teleprompter" onclick="sendToSufler()">На суфлёр</button>
+  <button class="teleprompter" onclick="addToSufler()">Добавить в суфлёр</button>
   <button class="secondary" onclick="clearSelection()">Сбросить</button>
 </div>
+
+<div id="toastbox"></div>
 
 <script src="riders_plan_data.js"></script>
 <script>
 var EMOJI = { money:"💰", nost:"❄️", sani:"🛷", camp:"🏔️", own:"✏️" };
 var LABEL = { money:"Выгода", nost:"Ностальгия", sani:"Сани летом", camp:"Кэмп", own:"Своя идея" };
 
-var K_DONE = "riders_plan_done";
-var K_OWN  = "riders_plan_custom";
+var K_DONE  = "riders_plan_done";
+var K_OWN   = "riders_plan_custom";
+var K_EDITS = "riders_plan_edits";
 
 function load(key, fallback){
   try { return JSON.parse(localStorage.getItem(key) || fallback); } catch(e) { return JSON.parse(fallback); }
 }
 function save(key, val){ try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {} }
 
-var done = load(K_DONE, "{}");
-var own  = load(K_OWN, "{}");
-var sel  = {};
-var DAYS = window.PLAN_DAYS || [];
+var done  = load(K_DONE, "{}");
+var own   = load(K_OWN, "{}");
+var edits = load(K_EDITS, "{}");
+var sel   = {};
+var DAYS  = window.PLAN_DAYS || [];
 
+var toastTimer = null;
+function toast(msg, isError){
+  var el = document.getElementById("toastbox");
+  el.textContent = msg;
+  el.classList.toggle("err", !!isError);
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ el.classList.remove("show"); }, isError ? 5000 : 3500);
+}
+
+// Базовый элемент плюс правка пользователя, если она есть.
 function itemsFor(day){
   var list = (day.items || []).map(function(it, i){
-    return { id: day.d + "_" + i, k: it.k, h: it.h, s: it.s, own: false };
+    var id = day.d + "_" + i, e = edits[id];
+    return {
+      id: id, k: it.k, own: false,
+      h: e && e.h != null ? e.h : it.h,
+      s: e && e.s != null ? e.s : it.s,
+      edited: !!e
+    };
   });
   (own[day.d] || []).forEach(function(o, i){
-    list.push({ id: day.d + "_own" + i, k: "own", h: o.h, s: o.s, own: true, oi: i });
+    list.push({ id: day.d + "_own" + i, k: "own", h: o.h, s: o.s, own: true, oi: i, edited: false });
   });
   return list;
 }
@@ -199,11 +239,14 @@ function render(){
     var tiles = list.map(function(it){
       num++;
       var cls = "tile " + it.k + (done[it.id] ? " done" : "") + (sel[it.id] ? " sel" : "");
-      return '<div class="' + cls + '" data-id="' + it.id + '" data-kind="' + it.k + '">'
+      return '<div class="' + cls + '" data-id="' + it.id + '" data-kind="' + it.k + '"'
+        + (it.own ? ' data-date="' + day.d + '" data-oi="' + it.oi + '"' : '') + '>'
         + '<div class="trow">'
         +   '<span class="num">' + num + '</span>'
         +   (it.own ? '<span class="own-badge">своя</span>' : '')
+        +   (it.edited ? '<span class="edited-badge">изменён</span>' : '')
         +   '<span class="spacer"></span>'
+        +   '<button class="minibtn edit" title="Редактировать" onclick="openEdit(this)">✎</button>'
         +   (it.own ? '<button class="minibtn del" title="Удалить" onclick="delOwn(\'' + day.d + '\',' + it.oi + ')">✕</button>' : '')
         +   '<button class="minibtn' + (done[it.id] ? ' on' : '') + '" title="Отметить снятым" onclick="toggleDone(this)">✓</button>'
         +   '<span class="chk" title="Выбрать" onclick="toggleSel(this)"></span>'
@@ -211,6 +254,15 @@ function render(){
         + '<span class="hook" onclick="toggleScript(this)"><span class="em">' + EMOJI[it.k] + '</span>' + esc(it.h) + '</span>'
         + (it.s ? '<button class="more" onclick="toggleScript(this)">Подробнее ▾</button>'
                 + '<div class="script">' + esc(it.s) + '</div>' : '')
+        + '<div class="editform">'
+        +   '<input type="text" class="ed-h" value="' + esc(it.h) + '" placeholder="Хук">'
+        +   '<textarea class="ed-s" rows="8" placeholder="Сценарий">' + esc(it.s || "") + '</textarea>'
+        +   '<div class="btns">'
+        +     '<button onclick="saveEdit(this)">Сохранить</button>'
+        +     '<button class="cancel" onclick="closeEdit(this)">Отмена</button>'
+        +     (it.edited ? '<button class="revert" onclick="revertEdit(this)">Вернуть исходный</button>' : '')
+        +   '</div>'
+        + '</div>'
         + '</div>';
     }).join("");
 
@@ -261,7 +313,7 @@ function toggleSel(el){
 
 function toggleScript(el){
   var t = tileOf(el), sc = t.querySelector(".script");
-  if (!sc) return;
+  if (!sc || t.classList.contains("editing")) return;
   var open = sc.classList.toggle("open");
   var mb = t.querySelector(".more");
   if (mb) mb.textContent = open ? "Свернуть ▴" : "Подробнее ▾";
@@ -274,6 +326,42 @@ function expandAll(open){
     var mb = t.querySelector(".more");
     if (mb) mb.textContent = open ? "Свернуть ▴" : "Подробнее ▾";
   });
+}
+
+// --- редактирование ---
+function openEdit(btn){
+  var t = tileOf(btn);
+  t.classList.add("editing");
+  t.querySelector(".editform").classList.add("open");
+  t.querySelector(".ed-h").focus();
+}
+function closeEdit(btn){
+  var t = tileOf(btn);
+  t.classList.remove("editing");
+  t.querySelector(".editform").classList.remove("open");
+  render();
+}
+function saveEdit(btn){
+  var t = tileOf(btn), id = t.dataset.id;
+  var h = t.querySelector(".ed-h").value.trim();
+  var s = t.querySelector(".ed-s").value.trim();
+  if (!h) { toast("Хук не может быть пустым", true); return; }
+  if (t.dataset.oi !== undefined) {
+    own[t.dataset.date][+t.dataset.oi] = { h: h, s: s };
+    save(K_OWN, own);
+  } else {
+    edits[id] = { h: h, s: s };
+    save(K_EDITS, edits);
+  }
+  render();
+  toast("Сохранено ✓");
+}
+function revertEdit(btn){
+  var t = tileOf(btn), id = t.dataset.id;
+  delete edits[id];
+  save(K_EDITS, edits);
+  render();
+  toast("Вернул исходный текст");
 }
 
 var currentFilter = "all";
@@ -318,12 +406,13 @@ function closeAdd(date){
 function saveOwn(date){
   var h = document.getElementById("addh_" + date).value.trim();
   var s = document.getElementById("adds_" + date).value.trim();
-  if (!h) { alert("Впиши хотя бы хук"); return; }
+  if (!h) { toast("Впиши хотя бы хук", true); return; }
   if (!own[date]) own[date] = [];
   own[date].push({ h: h, s: s });
   save(K_OWN, own);
   closeAdd(date);
   render();
+  toast("Идея добавлена ✓");
 }
 function delOwn(date, i){
   if (!confirm("Удалить свою идею?")) return;
@@ -333,27 +422,47 @@ function delOwn(date, i){
   render();
 }
 
+// --- выгрузка ---
+function collectSelected(){
+  var res = [], num = 0;
+  DAYS.forEach(function(day){
+    itemsFor(day).forEach(function(it){
+      num++;
+      if (sel[it.id]) { it._n = num; it._d = day; res.push(it); }
+    });
+  });
+  return res;
+}
+
 function buildText(onlySelected){
   var lines = ["RIDERS SCHOOL — КОНТЕНТ-ПЛАН, АВГУСТ", ""];
-  var num = 0, taken = 0;
+  var num = 0, taken = 0, lastDate = null;
   DAYS.forEach(function(day){
-    var list = itemsFor(day);
-    var picked = list.filter(function(it){
+    itemsFor(day).forEach(function(it){
       num++;
-      it._n = num;
-      return !onlySelected || sel[it.id];
-    });
-    if (!picked.length) return;
-    lines.push("======  " + day.d + "  (" + day.w + ")  ======", "");
-    picked.forEach(function(it){
+      if (onlySelected && !sel[it.id]) return;
       taken++;
-      lines.push("[" + it._n + "] " + LABEL[it.k].toUpperCase() + (done[it.id] ? "  · СНЯТО" : ""));
+      if (lastDate !== day.d) {
+        lines.push("======  " + day.d + "  (" + day.w + ")  ======", "");
+        lastDate = day.d;
+      }
+      lines.push("[" + num + "] " + LABEL[it.k].toUpperCase() + (done[it.id] ? "  · СНЯТО" : ""));
       lines.push("ХУК: " + it.h);
       if (it.s) lines.push("", it.s);
       lines.push("", "------------------------------------------------", "");
     });
   });
   return { text: lines.join("\n"), count: taken };
+}
+
+// Для суфлёра только читаемый текст: хук и сценарий, без служебных пометок.
+function buildSuflerText(){
+  var picked = collectSelected();
+  if (!picked.length) { toast("Ничего не выбрано", true); return null; }
+  var parts = picked.map(function(it){
+    return it.s ? (it.h + "\n\n" + it.s) : it.h;
+  });
+  return { text: parts.join("\n\n\n"), count: picked.length };
 }
 
 function download(name, text){
@@ -367,12 +476,31 @@ function download(name, text){
 
 function downloadSelected(){
   var r = buildText(true);
-  if (!r.count) { alert("Ничего не выбрано"); return; }
+  if (!r.count) { toast("Ничего не выбрано", true); return; }
   download("riders_plan_vybrannoe_" + r.count + ".txt", r.text);
+  toast("Файл скачан ✓");
 }
 function downloadAll(){
   var r = buildText(false);
   download("riders_plan_avgust.txt", r.text);
+  toast("Весь план скачан ✓");
+}
+
+// Вахтёр суфлёра слушает Downloads: na_sufler_*.txt заменяет текст,
+// dobavit_sufler_*.txt дописывает к текущему.
+function sendToSufler(){
+  var r = buildSuflerText();
+  if (!r) return;
+  download("na_sufler_" + Date.now() + ".txt", r.text);
+  clearSelection();
+  toast("Отправлено на суфлёр ✓ (" + r.count + " шт, суфлёр должен быть открыт на компе)");
+}
+function addToSufler(){
+  var r = buildSuflerText();
+  if (!r) return;
+  download("dobavit_sufler_" + Date.now() + ".txt", r.text);
+  clearSelection();
+  toast("Добавлено в суфлёр ✓ (" + r.count + " шт, суфлёр должен быть открыт на компе)");
 }
 
 render();
