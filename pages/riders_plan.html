@@ -24,10 +24,13 @@ nav a:hover { border-color:#4a4a4a; }
 .filters button[data-f="nost"].active  { border-color:#7cc4ff; color:#7cc4ff; }
 .filters button[data-f="sani"].active  { border-color:#6ee7c4; color:#6ee7c4; }
 .filters button[data-f="camp"].active  { border-color:#ff9f9f; color:#ff9f9f; }
+.filters button[data-f="watch"].active { border-color:#ffa64d; color:#ffa64d; }
+.filters button[data-f="read"].active  { border-color:#b0b8c4; color:#b0b8c4; }
 .filters button[data-f="own"].active   { border-color:#c9a3ff; color:#c9a3ff; }
 .legend { display:flex; gap:16px; flex-wrap:wrap; margin-top:12px; padding-top:12px; border-top:1px solid #252525; font-size:12px; color:#999; }
 .lg-money b { color:#ffd166; } .lg-nost b { color:#7cc4ff; }
 .lg-sani b { color:#6ee7c4; }  .lg-camp b { color:#ff9f9f; }
+.lg-watch b { color:#ffa64d; } .lg-read b { color:#b0b8c4; }
 .counter { margin-left:auto; font-size:12.5px; color:#888; }
 .counter b { color:#2ecc71; }
 .toolrow { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:12px; padding-top:12px; border-top:1px solid #252525; }
@@ -73,7 +76,13 @@ nav a:hover { border-color:#4a4a4a; }
 .tile.nost  { border-left-color:#7cc4ff; }
 .tile.sani  { border-left-color:#6ee7c4; }
 .tile.camp  { border-left-color:#ff9f9f; }
+.tile.watch { border-left-color:#ffa64d; }
+.tile.read  { border-left-color:#b0b8c4; }
 .tile.own   { border-left-color:#c9a3ff; }
+.tile.watch, .tile.read { background:#1d1d1d; }
+.tile.watch:hover, .tile.read:hover { background:#242424; }
+.tile.empty-script .hook { cursor:default; }
+.fillhint { display:inline-block; margin-top:6px; color:#6a6a6a; font-size:11px; font-style:italic; }
 .tile.done { opacity:.45; }
 .tile.done .hook { text-decoration:line-through; }
 .tile.hidden { display:none; }
@@ -109,7 +118,7 @@ nav a:hover { border-color:#4a4a4a; }
 .script.open { display:block; }
 .editform { display:none; margin-top:6px; }
 .editform.open { display:block; }
-.tile.editing .hook, .tile.editing .more, .tile.editing .script { display:none; }
+.tile.editing .hook, .tile.editing .more, .tile.editing .script, .tile.editing .fillhint { display:none; }
 
 .selbar {
   position:fixed; bottom:16px; right:16px; background:#1c1c1c; border:1px solid #333;
@@ -135,7 +144,7 @@ nav a:hover { border-color:#4a4a4a; }
 
 <div>
   <h1>Riders School — Контент-план</h1>
-  <p class="sub">10–31 августа · 110 роликов · по 5 в день</p>
+  <p class="sub">10–31 августа · 110 роликов плюс 44 карточки «Смотри» и «Читаю» · по 7 в день</p>
 </div>
 <nav>
   <a href="../index.html">Все клиенты</a>
@@ -150,14 +159,18 @@ nav a:hover { border-color:#4a4a4a; }
     <button data-f="nost">❄️ Ностальгия</button>
     <button data-f="sani">🛷 Сани летом</button>
     <button data-f="camp">🏔️ Кэмп</button>
+    <button data-f="watch">👀 Смотри</button>
+    <button data-f="read">💬 Читаю</button>
     <button data-f="own">✏️ Свои идеи</button>
-    <span class="counter">Снято: <b id="doneCount">0</b> из <span id="totalCount">110</span></span>
+    <span class="counter">Снято: <b id="doneCount">0</b> из <span id="totalCount">154</span></span>
   </div>
   <div class="legend">
     <span class="lg-money"><b>💰 Выгода</b> — скипасс, раннее бронирование, цены</span>
     <span class="lg-nost"><b>❄️ Ностальгия</b> — тоска по снегу, предвкушение</span>
     <span class="lg-sani"><b>🛷 Сани летом</b> — что готовить к зиме сейчас</span>
     <span class="lg-camp"><b>🏔️ Кэмп</b> — Шерегеш, 30.11–5.12 и 7–12.12</span>
+    <span class="lg-watch"><b>👀 Смотри</b> — архив зимы или новость отрасли</span>
+    <span class="lg-read"><b>💬 Читаю</b> — Threads, новости, комментарии</span>
   </div>
   <div class="toolrow">
     <button onclick="selectAllVisible()">Выбрать всё видимое</button>
@@ -181,8 +194,8 @@ nav a:hover { border-color:#4a4a4a; }
 
 <script src="riders_plan_data.js"></script>
 <script>
-var EMOJI = { money:"💰", nost:"❄️", sani:"🛷", camp:"🏔️", own:"✏️" };
-var LABEL = { money:"Выгода", nost:"Ностальгия", sani:"Сани летом", camp:"Кэмп", own:"Своя идея" };
+var EMOJI = { money:"💰", nost:"❄️", sani:"🛷", camp:"🏔️", watch:"👀", read:"💬", own:"✏️" };
+var LABEL = { money:"Выгода", nost:"Ностальгия", sani:"Сани летом", camp:"Кэмп", watch:"Смотри", read:"Читаю", own:"Своя идея" };
 
 var K_DONE  = "riders_plan_done";
 var K_OWN   = "riders_plan_custom";
@@ -238,7 +251,8 @@ function render(){
     total += list.length;
     var tiles = list.map(function(it){
       num++;
-      var cls = "tile " + it.k + (done[it.id] ? " done" : "") + (sel[it.id] ? " sel" : "");
+      var cls = "tile " + it.k + (it.s ? "" : " empty-script")
+              + (done[it.id] ? " done" : "") + (sel[it.id] ? " sel" : "");
       return '<div class="' + cls + '" data-id="' + it.id + '" data-kind="' + it.k + '"'
         + (it.own ? ' data-date="' + day.d + '" data-oi="' + it.oi + '"' : '') + '>'
         + '<div class="trow">'
@@ -253,7 +267,8 @@ function render(){
         + '</div>'
         + '<span class="hook" onclick="toggleScript(this)"><span class="em">' + EMOJI[it.k] + '</span>' + esc(it.h) + '</span>'
         + (it.s ? '<button class="more" onclick="toggleScript(this)">Подробнее ▾</button>'
-                + '<div class="script">' + esc(it.s) + '</div>' : '')
+                + '<div class="script">' + esc(it.s) + '</div>'
+                : '<span class="fillhint">текст впишем сами, жми ✎</span>')
         + '<div class="editform">'
         +   '<input type="text" class="ed-h" value="' + esc(it.h) + '" placeholder="Хук">'
         +   '<textarea class="ed-s" rows="8" placeholder="Сценарий">' + esc(it.s || "") + '</textarea>'
