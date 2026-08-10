@@ -4,10 +4,9 @@
 <style>
 :root { color-scheme: dark; }
 html, body { max-width:100%; overflow-x:hidden; }
-body { background:#111; color:#eee; font-family:-apple-system,Segoe UI,Arial,sans-serif; margin:0; padding:24px; box-sizing:border-box; }
+body { background:#111; color:#eee; font-family:-apple-system,Segoe UI,Arial,sans-serif; margin:0; padding:24px 24px 90px; box-sizing:border-box; }
 *, *::before, *::after { box-sizing:inherit; }
 h1 { font-size:22px; margin:0; }
-.pageheader { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
 .sub { color:#888; font-size:13px; margin:6px 0 0; }
 nav { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:14px 0 0; }
 nav a { background:#1a1a1a; border:1px solid #2a2a2a; color:#7cc4ff; padding:6px 14px; border-radius:20px; text-decoration:none; font-size:13px; }
@@ -25,51 +24,101 @@ nav a:hover { border-color:#4a4a4a; }
 .filters button[data-f="nost"].active  { border-color:#7cc4ff; color:#7cc4ff; }
 .filters button[data-f="sani"].active  { border-color:#6ee7c4; color:#6ee7c4; }
 .filters button[data-f="camp"].active  { border-color:#ff9f9f; color:#ff9f9f; }
+.filters button[data-f="own"].active   { border-color:#c9a3ff; color:#c9a3ff; }
 .legend { display:flex; gap:16px; flex-wrap:wrap; margin-top:12px; padding-top:12px; border-top:1px solid #252525; font-size:12px; color:#999; }
-.legend span b { font-weight:600; }
 .lg-money b { color:#ffd166; } .lg-nost b { color:#7cc4ff; }
 .lg-sani b { color:#6ee7c4; }  .lg-camp b { color:#ff9f9f; }
 .counter { margin-left:auto; font-size:12.5px; color:#888; }
 .counter b { color:#2ecc71; }
+.toolrow { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:12px; padding-top:12px; border-top:1px solid #252525; }
+.toolrow button { background:#222; border:1px solid #333; color:#a8d8ff; padding:5px 12px; border-radius:8px; cursor:pointer; font-size:12px; font-family:inherit; }
+.toolrow button:hover { background:#282828; }
 
 .daygrid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
 @media (max-width:1100px){ .daygrid{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media (max-width:700px){  .daygrid{ grid-template-columns:minmax(0,1fr); } }
 
 .day { background:#1a1a1a; border:1px solid #272727; border-radius:14px; padding:14px; display:flex; flex-direction:column; min-width:0; }
-.day-head { display:flex; align-items:baseline; gap:8px; margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid #262626; }
-.day-date { font-size:19px; font-weight:700; color:#fff; letter-spacing:.01em; }
+.day-head { display:flex; align-items:center; gap:8px; margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid #262626; }
+.day-date { font-size:19px; font-weight:700; color:#fff; }
 .day-dow { font-size:12px; color:#777; }
 .day-count { margin-left:auto; font-size:11px; color:#666; font-family:monospace; }
+.addbtn {
+  width:24px; height:24px; border-radius:50%; background:#242424; border:1px solid #3a3a3a;
+  color:#6ee7c4; font-size:16px; line-height:1; cursor:pointer; padding:0; font-family:inherit;
+  display:flex; align-items:center; justify-content:center; flex:0 0 auto;
+}
+.addbtn:hover { background:#2e2e2e; border-color:#6ee7c4; }
+
+.addform { display:none; margin-bottom:10px; background:#202020; border:1px solid #333; border-radius:8px; padding:10px; }
+.addform.open { display:block; }
+.addform input, .addform textarea {
+  width:100%; background:#181818; border:1px solid #333; color:#eee; border-radius:6px;
+  padding:7px 9px; font-size:12.5px; font-family:inherit; margin-bottom:6px; resize:vertical;
+}
+.addform .btns { display:flex; gap:6px; }
+.addform button { background:#2ecc71; color:#111; border:none; border-radius:6px; padding:5px 11px; cursor:pointer; font-size:12px; font-weight:600; font-family:inherit; }
+.addform button.cancel { background:#3a3a3a; color:#ccc; font-weight:400; }
 
 .tiles { display:flex; flex-direction:column; gap:8px; }
 .tile {
   position:relative; background:#212121; border:1px solid #2b2b2b; border-left:3px solid #444;
-  border-radius:8px; padding:9px 11px 9px 12px; font-size:12.7px; line-height:1.4; color:#ddd;
-  cursor:pointer; transition:background .12s, opacity .12s; overflow-wrap:break-word; word-break:break-word;
+  border-radius:8px; padding:8px 11px 9px 12px; font-size:12.7px; line-height:1.4; color:#ddd;
+  overflow-wrap:break-word; word-break:break-word; transition:background .12s, opacity .12s;
 }
-.tile:hover { background:#282828; }
-.tile .em { margin-right:5px; }
-.tile .num { font-family:monospace; font-size:10px; color:#5c5c5c; display:block; margin-bottom:3px; letter-spacing:.03em; }
+.tile:hover { background:#262626; }
 .tile.money { border-left-color:#ffd166; }
 .tile.nost  { border-left-color:#7cc4ff; }
 .tile.sani  { border-left-color:#6ee7c4; }
 .tile.camp  { border-left-color:#ff9f9f; }
-.tile.done { opacity:.4; }
-.tile.done .txt { text-decoration:line-through; }
-.tile.done::after {
-  content:"✓"; position:absolute; top:7px; right:9px; color:#2ecc71; font-size:13px; font-weight:700;
-}
+.tile.own   { border-left-color:#c9a3ff; }
+.tile.done { opacity:.45; }
+.tile.done .hook { text-decoration:line-through; }
 .tile.hidden { display:none; }
 .day.empty { display:none; }
+
+.trow { display:flex; align-items:center; gap:6px; margin-bottom:4px; }
+.num { font-family:monospace; font-size:10px; color:#5c5c5c; letter-spacing:.03em; }
+.own-badge { font-size:9.5px; color:#c9a3ff; border:1px solid #4a3a63; border-radius:4px; padding:1px 5px; }
+.trow .spacer { flex:1; }
+.chk { width:16px; height:16px; border-radius:4px; border:1.5px solid #555; background:#1a1a1a; cursor:pointer; flex:0 0 auto; position:relative; }
+.chk:hover { border-color:#2ecc71; }
+.tile.sel .chk { background:#2ecc71; border-color:#2ecc71; }
+.tile.sel .chk::after { content:""; position:absolute; left:4.5px; top:1px; width:4px; height:8px; border:solid #111; border-width:0 2px 2px 0; transform:rotate(42deg); }
+.tile.sel { border-color:#2ecc71; }
+.minibtn { background:none; border:none; color:#5c5c5c; cursor:pointer; font-size:12px; padding:0 2px; font-family:inherit; line-height:1; }
+.minibtn:hover { color:#aaa; }
+.minibtn.on { color:#2ecc71; }
+.minibtn.del:hover { color:#ff6b6b; }
+
+.hook { display:block; cursor:pointer; }
+.hook .em { margin-right:5px; }
+.more {
+  display:inline-block; margin-top:6px; background:none; border:none; padding:0;
+  color:#7cc4ff; font-size:11.5px; cursor:pointer; font-family:inherit;
+}
+.more:hover { text-decoration:underline; }
+.script {
+  display:none; margin-top:8px; padding-top:8px; border-top:1px dashed #333;
+  font-size:12.3px; line-height:1.55; color:#b6b6b6; white-space:pre-wrap;
+}
+.script.open { display:block; }
+
+.selbar {
+  position:fixed; bottom:16px; right:16px; background:#1c1c1c; border:1px solid #333;
+  border-radius:10px; padding:10px 14px; font-size:13px; display:none; gap:10px; align-items:center; z-index:50;
+  box-shadow:0 4px 20px rgba(0,0,0,.5);
+}
+.selbar.show { display:flex; }
+.selbar button { background:#2ecc71; color:#111; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; font-size:12px; font-weight:600; font-family:inherit; }
+.selbar button.secondary { background:#444; color:#eee; font-weight:400; }
+@media (max-width:600px){ .selbar { left:16px; right:16px; justify-content:center; flex-wrap:wrap; } }
 </style>
 </head><body>
 
-<div class="pageheader">
-  <div>
-    <h1>Riders School — Контент-план</h1>
-    <p class="sub">10–31 августа · 110 роликов · по 5 в день</p>
-  </div>
+<div>
+  <h1>Riders School — Контент-план</h1>
+  <p class="sub">10–31 августа · 110 роликов · по 5 в день</p>
 </div>
 <nav>
   <a href="../index.html">Все клиенты</a>
@@ -84,7 +133,8 @@ nav a:hover { border-color:#4a4a4a; }
     <button data-f="nost">❄️ Ностальгия</button>
     <button data-f="sani">🛷 Сани летом</button>
     <button data-f="camp">🏔️ Кэмп</button>
-    <span class="counter">Снято: <b id="doneCount">0</b> из 110</span>
+    <button data-f="own">✏️ Свои идеи</button>
+    <span class="counter">Снято: <b id="doneCount">0</b> из <span id="totalCount">110</span></span>
   </div>
   <div class="legend">
     <span class="lg-money"><b>💰 Выгода</b> — скипасс, раннее бронирование, цены</span>
@@ -92,206 +142,150 @@ nav a:hover { border-color:#4a4a4a; }
     <span class="lg-sani"><b>🛷 Сани летом</b> — что готовить к зиме сейчас</span>
     <span class="lg-camp"><b>🏔️ Кэмп</b> — Шерегеш, 30.11–5.12 и 7–12.12</span>
   </div>
+  <div class="toolrow">
+    <button onclick="selectAllVisible()">Выбрать всё видимое</button>
+    <button onclick="expandAll(true)">Раскрыть все сценарии</button>
+    <button onclick="expandAll(false)">Свернуть все</button>
+    <button onclick="downloadAll()">Скачать весь план txt</button>
+  </div>
 </div>
 
 <div class="daygrid" id="grid"></div>
 
+<div class="selbar" id="selbar">
+  Выбрано: <span id="selCount">0</span>
+  <button onclick="downloadSelected()">Скачать txt</button>
+  <button class="secondary" onclick="clearSelection()">Сбросить</button>
+</div>
+
+<script src="riders_plan_data.js"></script>
 <script>
-var EMOJI = { money:"💰", nost:"❄️", sani:"🛷", camp:"🏔️" };
+var EMOJI = { money:"💰", nost:"❄️", sani:"🛷", camp:"🏔️", own:"✏️" };
+var LABEL = { money:"Выгода", nost:"Ностальгия", sani:"Сани летом", camp:"Кэмп", own:"Своя идея" };
 
-var DAYS = [
- ["10.08","пн",[
-  ["money","Бабки есть? А если найду?"],
-  ["money","Покупать кофе каждое утро это мышление бедного человека. И скипасс зимой покупать тоже"],
-  ["nost","А вы скучаете? Мы спросили это год назад и ответили 360 тысяч человек"],
-  ["sani","Готовь сани летом. Показываю, что это значит для горнолыжника в цифрах"],
-  ["camp","30 ноября мы уезжаем в Шерегеш. Две смены по шесть дней. Рассказываю, зачем тебе туда"]]],
- ["11.08","вт",[
-  ["money","Бабки есть? Стой, не беги. Я наоборот, подогнать хотел"],
-  ["money","Бронирует зимой. Бедный. Бронирует в августе. Богатый. Продолжаем"],
-  ["nost","Есть звук, который слышит только райдер. Хруст снега под кантом. В августе он снится"],
-  ["sani","Что нужно решить о зиме прямо сейчас, в августе, чтобы в декабре не бегать"],
-  ["camp","Шесть дней в кэмпе дают больше, чем три сезона катания в одиночку. Объясняю почему"]]],
- ["12.08","ср",[
-  ["money","Бабки есть? На зиму, я имею в виду. Вопрос серьёзный"],
-  ["money","Покупает скипасс в кассе на месте. Бедный. Берёт заранее онлайн. Богатый"],
-  ["nost","Пересматриваю видео с прошлого сезона третий раз за неделю. Никому не рассказывайте"],
-  ["sani","Комбез, доска, ботинки. Что из этого реально покупать летом и почему"],
-  ["camp","Как выглядит один день в кэмпе. По часам, без прикрас"]]],
- ["13.08","чт",[
-  ["money","Бабки есть? А скидка пятьдесят процентов на скипасс есть? Вот и я о том же"],
-  ["money","Горжусь тем, что никогда в жизни не покупал скипасс по полной стоимости"],
-  ["nost","Достал зимнюю куртку из шкафа просто посмотреть. В августе. Не осуждайте"],
-  ["sani","Летом снаряжение стоит дешевле, чем в сезон. Показываю разницу на конкретных позициях"],
-  ["camp","Кому в Шерегеш ехать рано, а кому наоборот пора. Честно, без продажи"]]],
- ["14.08","пт",[
-  ["money","Бабки есть? Считай со мной. Скипасс декабрьский, скипасс августовский. Чувствуешь?"],
-  ["money","Их ненавидят все сноубордисты и лыжники, но без них не могут. Это цены на скипассы зимой"],
-  ["nost","Зимой и летом я два разных человека. Показываю летнего"],
-  ["sani","Доску можно подготовить летом и она перезимует лучше. Три вещи, которые делают единицы"],
-  ["camp","В прошлом декабре места для новичков закончились до Нового года. Люди писали, а мы разводили руками"]]],
- ["15.08","сб",[
-  ["money","Бабки есть? Раньше бы отобрал. Теперь работаю в школе и предлагаю"],
-  ["money","Главный вор твоего горнолыжного отдыха это ты сам. Сейчас узнаешь себя"],
-  ["nost","Год делится на две части. До первого снега и после. Сейчас мы в первой"],
-  ["sani","Ботинки нужно покупать летом. Объясняю, при чём тут отёк ноги"],
-  ["camp","Места на первую смену уходят быстрее, чем на вторую. Каждый год одинаково"]]],
- ["16.08","вс",[
-  ["money","Бабки есть? Не отвечай. Я по глазам вижу, что ты ещё не забронировал"],
-  ["money","Тааак, сэкономил на скипассах. Пятнадцать, сорок, девяносто тысяч"],
-  ["nost","Друзья зовут на море, а ты уже мысленно на склоне. Не только ты"],
-  ["sani","Чем заняться летом, чтобы зимой поехать лучше. Список, который реально работает"],
-  ["camp","Лучших инструкторов разбирают в первую неделю записи. Остальным остаются неудобные окна"]]],
- ["17.08","пн",[
-  ["money","Бабки есть? Всё, забирай скидку. Только скажи потом, что я тебя не грабил, а спас"],
-  ["money","Бабла на нормальный отдых в горах всегда не хватает, сколько бы ты ни зарабатывал"],
-  ["nost","Открыл фото с прошлой зимы просто глянуть. Залип на час"],
-  ["sani","Батут летом это не баловство. Показываю, как он переносится на склон зимой"],
-  ["camp","Показываю тренеров, которые поедут в Шерегеш. Одного ты точно видел в чьих-то сторис"]]],
- ["18.08","вт",[
-  ["money","Э, бабки на зиму есть?"],
-  ["money","Забронировал одну и ту же поездку два раза: в августе и в декабре. Разница в чеке на экране"],
-  ["nost","Кто-то считает дни до отпуска. Райдер считает дни до сезона"],
-  ["sani","Скейт и серфскейт летом дают то же чувство канта. Проверяли на учениках"],
-  ["camp","Что говорят те, кто был в кэмпе в прошлом году. Показываю сообщения без монтажа"]]],
- ["19.08","ср",[
-  ["money","Купил скипасс по акции и по полной цене. Показываю оба чека рядом"],
-  ["money","Сравнил цены на жильё в Поляне на новогодние в августе и в ноябре. Цифры неприятные"],
-  ["nost","Запах воска для доски ни с чем не спутаешь. Даже в июле"],
-  ["sani","Колени готовят летом, а не в декабре. Иначе первый же день выбивает"],
-  ["camp","Почему кэмп в Шерегеше, а не в Поляне, где я живу. Отвечаю честно"]]],
- ["20.08","чт",[
-  ["money","Знаешь, в каком месяце самый дешёвый скипасс за весь год? Не в том, о котором ты подумал"],
-  ["money","Слушай, а сколько стоит зимняя неделя в горах? Ну тысяч сто? Нет. Считаем вместе"],
-  ["nost","Мам, а мы поедем зимой"],
-  ["sani","Как выбрать инструктора заранее, пока свободны все окна"],
-  ["camp","Сколько стоит место в кэмпе сейчас и сколько будет в октябре"]]],
- ["21.08","пт",[
-  ["money","Знаешь, сколько стоит одно занятие в декабре и сколько сейчас? Разница смешная"],
-  ["money","Расскажите, сколько вы переплатили из-за того, что не забронировали заранее"],
-  ["nost","Тот момент на подъёмнике, когда виден весь склон. В жару вспоминается сам собой"],
-  ["sani","Родители, вот что нужно решить о зимних занятиях ребёнка уже сейчас"],
-  ["camp","Куда именно вы едете и где будете жить. Показываю Шерегеш заранее"]]],
- ["22.08","сб",[
-  ["money","Скипасс дорожает каждый месяц ближе к декабрю. Показываю график за три года"],
-  ["money","Сколько тратит средняя семья за неделю в горах. Считаю по чекам заранее"],
-  ["nost","До первого снега в Красной Поляне осталось столько-то дней. Ты уже считаешь?"],
-  ["sani","Что сделать летом, чтобы первый день в горах не пропал впустую"],
-  ["camp","Что взять в Шерегеш. Список от тех, кто уже ездил"]]],
- ["23.08","вс",[
-  ["money","Куда уходят деньги за скипасс. Показываю, кто на самом деле их получает"],
-  ["money","Ты не бедный. Ты просто платишь за скипасс не в том месяце"],
-  ["nost","Тело помнит зиму даже в плюс тридцать. Вот почему тянет встать на доску хоть на батуте"],
-  ["sani","Все едут в декабре неподготовленными и теряют половину поездки. Вот как не потерять"],
-  ["camp","Напиши ШЕРЕГЕШ, пришлю программу кэмпа и цену со скидкой раннего бронирования"]]],
- ["24.08","пн",[
-  ["money","Деньги на зимний отдых у тебя скорее всего уже есть. Просто лежат не в том месте"],
-  ["money","Секрет тех, кто каждый год катается дешевле остальных, не в зарплате. В августе"],
-  ["nost","Единственное, чего не хватает в августе, это холода на щеках после первого спуска"],
-  ["sani","Пиши РЕБЁНОК, скину памятку родителям перед первым сезоном"],
-  ["camp","Напиши МЕСТО, проверю, сколько слотов осталось на твою смену"]]],
- ["25.08","вт",[
-  ["money","Через месяц эта скидка исчезнет. А фраза «надо было раньше» останется"],
-  ["money","Один месяц лета решает, сколько ты заплатишь зимой"],
-  ["nost","Опять чьи-то сторис с гор в ленте. И вот ты уже открываешь календарь"],
-  ["sani","Напиши ЧЕКЛИСТ, отправлю список, что готовить к зиме уже в августе"],
-  ["camp","Что делать, если катаешься первый год и страшно ехать в кэмп"]]],
- ["26.08","ср",[
-  ["money","Если бы деньги на зимний отдых копились сами, эта скидка была бы не нужна"],
-  ["money","Три траты на зиму, которые окупаются, и три, которые не окупаются никогда"],
-  ["nost","То чувство, когда лето отличное, а ты всё равно ждёшь декабрь"],
-  ["sani","Летом решают, зимой катаются. Разбираю, кто что успевает"],
-  ["camp","В прошлом году половина группы забронировала в первую неделю продаж"]]],
- ["27.08","чт",[
-  ["money","Кто платит за горы дважды и почему. Схема, в которую попадают почти все"],
-  ["money","Экономит на инструкторе и тратит на экипировку. Знакомая схема? Объясняю, почему не работает"],
-  ["nost","Разговор в чате школы каждый август одинаковый. Ну когда уже"],
-  ["sani","Один мой ученик готовился всё лето и в декабре обогнал тех, кто катается три года"],
-  ["camp","Пока ты думаешь бронировать или нет, половина мест уже занята"]]],
- ["28.08","пт",[
-  ["money","Новичок покупает доску первой. Опытный покупает урок первым. Разница в деньгах через три года огромная"],
-  ["money","Турция сейчас или горы зимой"],
-  ["nost","Лето это просто длинная пауза перед тем, что реально нравится"],
-  ["sani","Я летом варю кофе и монтирую видео. И готовлюсь к сезону. Рассказываю как"],
-  ["camp","Есть ли отбор в кэмп и что будет, если ты слабее группы. Отвечаю честно"]]],
- ["29.08","сб",[
-  ["money","Сколько стоит снять квартиру в Красной Поляне на новогодние праздники? Отвечаю честно"],
-  ["money","Куда ехать зимой в горы решают уже сейчас, а не в декабре. Опоздавшие переплачивают втрое"],
-  ["nost","Ребят, кто помнит свой первый спуск? Опишите тремя словами"],
-  ["sani","Что я делаю каждое лето, чтобы в декабре сразу поехать, а не вкатываться неделю"],
-  ["camp","Первая смена с 30 ноября, вторая с 7 декабря. Разбираю, какая кому подходит"]]],
- ["30.08","вс",[
-  ["money","Посчитал, сколько теряет тот, кто бронирует в последний момент. Цифра неприятная"],
-  ["money","Пиши СКИДКА, расскажу, как забрать минус пятьдесят процентов на скипасс"],
-  ["nost","Назовите фразу инструктора, которую вы запомнили навсегда"],
-  ["sani","Пять вещей, которые дешевле и проще сделать летом, чем зимой"],
-  ["camp","Кто уже записался, сидит в чате и обсуждает программу. Кто нет, смотрит этот ролик"]]],
- ["31.08","пн",[
-  ["money","Напиши ЦЕНА, пришлю честный расчёт зимней поездки без скрытых доплат"],
-  ["money","Пиши НГ, пришлю варианты на новогодние с ценами на сегодня"],
-  ["nost","Расскажите свою историю из серии «думал, что упаду и умру, но поехал». Читаю комментарии"],
-  ["sani","Не жди снега. Готовься к нему. Разница огромная"],
-  ["camp","Последний день августовской цены на кэмп. Дальше считаем по-другому"]]]
-];
+var K_DONE = "riders_plan_done";
+var K_OWN  = "riders_plan_custom";
 
-var KEY = "riders_plan_done";
-var done = {};
-try { done = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch(e) { done = {}; }
+function load(key, fallback){
+  try { return JSON.parse(localStorage.getItem(key) || fallback); } catch(e) { return JSON.parse(fallback); }
+}
+function save(key, val){ try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {} }
 
-function saveDone(){
-  try { localStorage.setItem(KEY, JSON.stringify(done)); } catch(e) {}
+var done = load(K_DONE, "{}");
+var own  = load(K_OWN, "{}");
+var sel  = {};
+var DAYS = window.PLAN_DAYS || [];
+
+function itemsFor(day){
+  var list = (day.items || []).map(function(it, i){
+    return { id: day.d + "_" + i, k: it.k, h: it.h, s: it.s, own: false };
+  });
+  (own[day.d] || []).forEach(function(o, i){
+    list.push({ id: day.d + "_own" + i, k: "own", h: o.h, s: o.s, own: true, oi: i });
+  });
+  return list;
 }
 
-function refreshCounter(){
-  var n = 0;
-  for (var k in done) { if (done[k]) n++; }
-  document.getElementById("doneCount").textContent = n;
+function esc(t){
+  return String(t == null ? "" : t)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
 
 function render(){
-  var grid = document.getElementById("grid");
-  var out = "";
-  var num = 0;
-  for (var d = 0; d < DAYS.length; d++){
-    var day = DAYS[d], date = day[0], dow = day[1], items = day[2];
-    var tiles = "";
-    for (var i = 0; i < items.length; i++){
+  var out = "", num = 0, total = 0;
+  DAYS.forEach(function(day){
+    var list = itemsFor(day);
+    total += list.length;
+    var tiles = list.map(function(it){
       num++;
-      var kind = items[i][0], txt = items[i][1];
-      var id = date + "_" + i;
-      var cls = "tile " + kind + (done[id] ? " done" : "");
-      tiles += '<div class="' + cls + '" data-id="' + id + '" data-kind="' + kind + '" onclick="toggleTile(this)">'
-             + '<span class="num">' + num + '</span>'
-             + '<span class="txt"><span class="em">' + EMOJI[kind] + '</span>' + txt + '</span></div>';
-    }
-    out += '<div class="day" data-date="' + date + '">'
-         + '<div class="day-head"><span class="day-date">' + date + '</span>'
-         + '<span class="day-dow">' + dow + '</span>'
-         + '<span class="day-count">' + items.length + ' шт</span></div>'
-         + '<div class="tiles">' + tiles + '</div></div>';
-  }
-  grid.innerHTML = out;
-  refreshCounter();
+      var cls = "tile " + it.k + (done[it.id] ? " done" : "") + (sel[it.id] ? " sel" : "");
+      return '<div class="' + cls + '" data-id="' + it.id + '" data-kind="' + it.k + '">'
+        + '<div class="trow">'
+        +   '<span class="num">' + num + '</span>'
+        +   (it.own ? '<span class="own-badge">своя</span>' : '')
+        +   '<span class="spacer"></span>'
+        +   (it.own ? '<button class="minibtn del" title="Удалить" onclick="delOwn(\'' + day.d + '\',' + it.oi + ')">✕</button>' : '')
+        +   '<button class="minibtn' + (done[it.id] ? ' on' : '') + '" title="Отметить снятым" onclick="toggleDone(this)">✓</button>'
+        +   '<span class="chk" title="Выбрать" onclick="toggleSel(this)"></span>'
+        + '</div>'
+        + '<span class="hook" onclick="toggleScript(this)"><span class="em">' + EMOJI[it.k] + '</span>' + esc(it.h) + '</span>'
+        + (it.s ? '<button class="more" onclick="toggleScript(this)">Подробнее ▾</button>'
+                + '<div class="script">' + esc(it.s) + '</div>' : '')
+        + '</div>';
+    }).join("");
+
+    out += '<div class="day" data-date="' + day.d + '">'
+      + '<div class="day-head">'
+      +   '<span class="day-date">' + day.d + '</span><span class="day-dow">' + day.w + '</span>'
+      +   '<span class="day-count">' + list.length + ' шт</span>'
+      +   '<button class="addbtn" title="Добавить свою идею" onclick="openAdd(\'' + day.d + '\')">+</button>'
+      + '</div>'
+      + '<div class="addform" id="add_' + day.d + '">'
+      +   '<input type="text" placeholder="Хук (первая фраза)" id="addh_' + day.d + '">'
+      +   '<textarea rows="4" placeholder="Сценарий целиком (можно оставить пустым)" id="adds_' + day.d + '"></textarea>'
+      +   '<div class="btns"><button onclick="saveOwn(\'' + day.d + '\')">Сохранить</button>'
+      +   '<button class="cancel" onclick="closeAdd(\'' + day.d + '\')">Отмена</button></div>'
+      + '</div>'
+      + '<div class="tiles">' + tiles + '</div></div>';
+  });
+  document.getElementById("grid").innerHTML = out;
+  document.getElementById("totalCount").textContent = total;
+  refreshCounters();
+  applyFilter(currentFilter);
 }
 
-function toggleTile(el){
-  var id = el.dataset.id;
+function refreshCounters(){
+  var n = 0; for (var k in done) if (done[k]) n++;
+  document.getElementById("doneCount").textContent = n;
+  var s = 0; for (var k2 in sel) if (sel[k2]) s++;
+  document.getElementById("selCount").textContent = s;
+  document.getElementById("selbar").classList.toggle("show", s > 0);
+}
+
+function tileOf(el){ return el.closest(".tile"); }
+
+function toggleDone(btn){
+  var t = tileOf(btn), id = t.dataset.id;
   done[id] = !done[id];
-  el.classList.toggle("done", !!done[id]);
-  saveDone();
-  refreshCounter();
+  t.classList.toggle("done", !!done[id]);
+  btn.classList.toggle("on", !!done[id]);
+  save(K_DONE, done); refreshCounters();
 }
 
+function toggleSel(el){
+  var t = tileOf(el), id = t.dataset.id;
+  sel[id] = !sel[id];
+  t.classList.toggle("sel", !!sel[id]);
+  refreshCounters();
+}
+
+function toggleScript(el){
+  var t = tileOf(el), sc = t.querySelector(".script");
+  if (!sc) return;
+  var open = sc.classList.toggle("open");
+  var mb = t.querySelector(".more");
+  if (mb) mb.textContent = open ? "Свернуть ▴" : "Подробнее ▾";
+}
+
+function expandAll(open){
+  document.querySelectorAll(".tile").forEach(function(t){
+    var sc = t.querySelector(".script"); if (!sc) return;
+    sc.classList.toggle("open", open);
+    var mb = t.querySelector(".more");
+    if (mb) mb.textContent = open ? "Свернуть ▴" : "Подробнее ▾";
+  });
+}
+
+var currentFilter = "all";
 function applyFilter(f){
+  currentFilter = f;
   document.querySelectorAll(".tile").forEach(function(t){
     t.classList.toggle("hidden", f !== "all" && t.dataset.kind !== f);
   });
   document.querySelectorAll(".day").forEach(function(d){
-    var visible = d.querySelectorAll(".tile:not(.hidden)").length;
-    d.classList.toggle("empty", visible === 0);
+    d.classList.toggle("empty", d.querySelectorAll(".tile:not(.hidden)").length === 0);
   });
 }
-
 document.querySelectorAll(".filters button").forEach(function(b){
   b.addEventListener("click", function(){
     document.querySelectorAll(".filters button").forEach(function(x){ x.classList.remove("active"); });
@@ -299,6 +293,87 @@ document.querySelectorAll(".filters button").forEach(function(b){
     applyFilter(b.dataset.f);
   });
 });
+
+function selectAllVisible(){
+  document.querySelectorAll(".tile:not(.hidden)").forEach(function(t){
+    sel[t.dataset.id] = true; t.classList.add("sel");
+  });
+  refreshCounters();
+}
+function clearSelection(){
+  sel = {};
+  document.querySelectorAll(".tile.sel").forEach(function(t){ t.classList.remove("sel"); });
+  refreshCounters();
+}
+
+function openAdd(date){
+  document.getElementById("add_" + date).classList.add("open");
+  document.getElementById("addh_" + date).focus();
+}
+function closeAdd(date){
+  document.getElementById("add_" + date).classList.remove("open");
+  document.getElementById("addh_" + date).value = "";
+  document.getElementById("adds_" + date).value = "";
+}
+function saveOwn(date){
+  var h = document.getElementById("addh_" + date).value.trim();
+  var s = document.getElementById("adds_" + date).value.trim();
+  if (!h) { alert("Впиши хотя бы хук"); return; }
+  if (!own[date]) own[date] = [];
+  own[date].push({ h: h, s: s });
+  save(K_OWN, own);
+  closeAdd(date);
+  render();
+}
+function delOwn(date, i){
+  if (!confirm("Удалить свою идею?")) return;
+  own[date].splice(i, 1);
+  if (!own[date].length) delete own[date];
+  save(K_OWN, own);
+  render();
+}
+
+function buildText(onlySelected){
+  var lines = ["RIDERS SCHOOL — КОНТЕНТ-ПЛАН, АВГУСТ", ""];
+  var num = 0, taken = 0;
+  DAYS.forEach(function(day){
+    var list = itemsFor(day);
+    var picked = list.filter(function(it){
+      num++;
+      it._n = num;
+      return !onlySelected || sel[it.id];
+    });
+    if (!picked.length) return;
+    lines.push("======  " + day.d + "  (" + day.w + ")  ======", "");
+    picked.forEach(function(it){
+      taken++;
+      lines.push("[" + it._n + "] " + LABEL[it.k].toUpperCase() + (done[it.id] ? "  · СНЯТО" : ""));
+      lines.push("ХУК: " + it.h);
+      if (it.s) lines.push("", it.s);
+      lines.push("", "------------------------------------------------", "");
+    });
+  });
+  return { text: lines.join("\n"), count: taken };
+}
+
+function download(name, text){
+  var blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+
+function downloadSelected(){
+  var r = buildText(true);
+  if (!r.count) { alert("Ничего не выбрано"); return; }
+  download("riders_plan_vybrannoe_" + r.count + ".txt", r.text);
+}
+function downloadAll(){
+  var r = buildText(false);
+  download("riders_plan_avgust.txt", r.text);
+}
 
 render();
 </script>
