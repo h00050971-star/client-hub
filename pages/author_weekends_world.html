@@ -1,0 +1,159 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Автор: @weekends.world</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>%F0%9F%93%81</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root { color-scheme: dark; }
+html, body { max-width:100%; overflow-x:hidden; }
+body { background:#111; color:#eee; font-family:-apple-system,Segoe UI,Arial,sans-serif; margin:0; padding:24px; box-sizing:border-box; }
+*, *::before, *::after { box-sizing:inherit; }
+h1 { font-size:22px; margin-bottom:4px; }
+.pageheader { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
+.pageheader h1 { margin:0; }
+.toolbar { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; margin:6px 0 16px; }
+nav { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:0; }
+nav a { background:#1a1a1a; border:1px solid #2a2a2a; color:#7cc4ff; padding:6px 14px; border-radius:20px; text-decoration:none; font-size:13px; transition:background .15s,border-color .15s; }
+nav a:hover { border-color:#4a4a4a; }
+nav a.active { background:#2a2a2a; color:#fff; border-color:#555; }
+nav a.home { color:#ddd; }
+nav a.shotnav { color:#ff6b6b; border-color:rgba(255,107,107,.25); }
+nav a.shotnav.active { background:#3a1f1f; color:#fff; border-color:#ff6b6b; }
+.filterpanel { background:#181818; border:1px solid #262626; border-radius:12px; padding:14px 18px; margin-bottom:20px; }
+.supercat-row { display:flex; gap:24px; flex-wrap:wrap; }
+.supercat { color:#6ee7c4; font-weight:700; text-transform:uppercase; letter-spacing:.05em; font-size:13px; cursor:pointer; user-select:none; }
+.acc-arrow { display:inline-block; width:10px; }
+.accordion-body { margin-top:4px; padding-top:12px; border-top:1px solid #252525; }
+.accordion-body.collapsed { display:none; }
+.topicrow, .typerow { display:flex; flex-wrap:wrap; gap:8px; margin:5px 0; }
+.topicrow a, .typerow a { background:#222; border:1px solid #2c2c2c; padding:4px 12px; border-radius:14px; text-decoration:none; font-size:12.5px; transition:background .15s,border-color .15s; }
+.topicrow a { color:#ff9f9f; }
+.typerow a { color:#a8d8ff; }
+.topicrow a.active, .typerow a.active { background:#333; color:#fff; border-color:#666; }
+.topicrow a:hover, .typerow a:hover { background:#282828; }
+.grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:14px; margin-top:20px; max-width:100%; }
+@media (max-width:1400px){ .grid{ grid-template-columns:repeat(4,minmax(0,1fr));} }
+@media (max-width:1100px){ .grid{ grid-template-columns:repeat(3,minmax(0,1fr));} }
+@media (max-width:800px){ .grid{ grid-template-columns:repeat(2,minmax(0,1fr));} }
+@media (max-width:500px){ .grid{ grid-template-columns:minmax(0,1fr);} }
+.card { position:relative; background:#1c1c1c; border-radius:10px; padding:10px; display:flex; flex-direction:column; min-width:0; max-width:100%; overflow:hidden; }
+.card.hl { outline:3px solid #ff6b6b; }
+.shotbtn {
+  position:absolute; top:6px; left:6px; z-index:8; width:26px; height:26px; border-radius:50%;
+  background:rgba(20,20,20,.75); border:2px solid #ff4444; color:#ff4444; font-size:14px; font-weight:700;
+  line-height:22px; text-align:center; cursor:pointer; padding:0;
+}
+.shotbtn:hover { background:#ff4444; color:#fff; }
+.card.shot .shotbtn { background:#ff4444; color:#fff; }
+.card.shot::after {
+  content:""; position:absolute; inset:0; pointer-events:none; z-index:7; border-radius:10px;
+  background:
+    linear-gradient(to top right, transparent calc(50% - 1.5px), #ff4444 calc(50% - 1.5px), #ff4444 calc(50% + 1.5px), transparent calc(50% + 1.5px)),
+    linear-gradient(to top left, transparent calc(50% - 1.5px), #ff4444 calc(50% - 1.5px), #ff4444 calc(50% + 1.5px), transparent calc(50% + 1.5px));
+}
+.card.shot { opacity:.6; }
+.refcode { font-size:10.5px; color:#666; letter-spacing:.03em; margin-bottom:4px; font-family:monospace; }
+.searchbox { display:flex; gap:6px; align-items:center; margin:0; }
+.searchbox input { background:#1c1c1c; border:1px solid #333; color:#eee; border-radius:6px; padding:5px 8px; font-size:12px; width:140px; }
+.searchbox button { background:#242424; color:#7cc4ff; border:1px solid #333; border-radius:6px; padding:5px 10px; cursor:pointer; font-size:12px; }
+.card video, .card img.main { width:100%; border-radius:6px; background:#000; max-height:340px; object-fit:contain; }
+.vwrap, .cwrap, .imgwrap { position:relative; }
+.playbtn {
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:56px; height:56px; border-radius:50%; background:rgba(0,0,0,.45);
+  display:flex; align-items:center; justify-content:center; cursor:pointer;
+  transition:opacity .15s; pointer-events:auto;
+}
+.playbtn::after {
+  content:""; border-style:solid; border-width:12px 0 12px 20px;
+  border-color:transparent transparent transparent rgba(255,255,255,.85);
+  margin-left:4px;
+}
+.playbtn.hidden { opacity:0; pointer-events:none; }
+.carousel-nav {
+  position:absolute; top:50%; transform:translateY(-50%);
+  width:34px; height:34px; border-radius:50%; background:rgba(0,0,0,.4);
+  color:rgba(255,255,255,.85); display:flex; align-items:center; justify-content:center;
+  cursor:pointer; font-size:18px; user-select:none;
+}
+.carousel-nav.prev { left:6px; }
+.carousel-nav.next { right:6px; }
+.thumbs { display:flex; gap:4px; margin-top:4px; overflow-x:auto; }
+.thumbs img { height:44px; border-radius:4px; cursor:pointer; opacity:.7; }
+.thumbs img.active { opacity:1; outline:2px solid #7cc4ff; }
+.stats { font-size:12px; color:#9c9; margin-top:6px; display:flex; gap:10px; flex-wrap:wrap; }
+.stats span { background:#242424; padding:2px 6px; border-radius:4px; }
+.owner { font-size:11px; color:#888; margin-top:4px; overflow-wrap:break-word; word-break:break-word; }
+.owner a.authorlink { color:#ddd; text-decoration:underline; cursor:pointer; }
+.owner a.authorlink:hover { color:#fff; }
+.section-label { font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:#7cc4ff; margin-top:8px; }
+.text { font-size:12.5px; line-height:1.4; color:#ccc; margin-top:4px; white-space:pre-wrap; overflow-wrap:break-word; word-break:break-word; max-height:160px; max-width:100%; overflow-y:auto; overflow-x:hidden; }
+.note { font-size:12px; color:#e88; }
+a.origlink { font-size:11px; color:#7cc4ff; }
+.selectwrap { position:absolute; top:6px; right:6px; z-index:6; }
+.selectwrap input.selchk { display:none; }
+.selectwrap .selmark {
+  display:block; width:26px; height:26px; border-radius:50%;
+  background:rgba(0,0,0,.5); border:2px solid rgba(255,255,255,.6); cursor:pointer; position:relative;
+}
+.selectwrap input.selchk:checked + .selmark { background:#2ecc71; border-color:#2ecc71; }
+.selectwrap input.selchk:checked + .selmark::after {
+  content:""; position:absolute; left:7px; top:3px; width:7px; height:13px;
+  border:solid white; border-width:0 3px 3px 0; transform:rotate(40deg);
+}
+.selbar {
+  position:fixed; bottom:16px; right:16px; background:#1c1c1c; border:1px solid #333;
+  border-radius:10px; padding:10px 14px; font-size:13px; display:flex; gap:10px; align-items:center; z-index:50;
+}
+.selbar button { background:#2ecc71; color:#111; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; font-size:12px; font-weight:600; }
+.selbar button.secondary { background:#444; color:#eee; }
+.selbar button.teleprompter { background:#ff9800; color:#111; }
+.sortbar { display:flex; justify-content:flex-end; align-items:center; gap:8px; margin:0; }
+.sortbar button { background:#242424; color:#7cc4ff; border:1px solid #333; border-radius:6px; padding:5px 10px; cursor:pointer; font-size:12px; }
+.sortbar button.active { color:#fff; border-color:#7cc4ff; }
+.sortdiv { width:1px; align-self:stretch; background:#333; margin:0 2px; }
+.sortbar #sort-unshot, .sortbar #sort-shot { color:#ff9f9f; }
+.sortbar #sort-unshot.active, .sortbar #sort-shot.active { color:#fff; border-color:#ff6b6b; }
+@media (max-width:600px){ .sortbar{ justify-content:flex-start; flex-wrap:wrap; } }
+</style>
+</head><body>
+<div class="pageheader">
+<h1>Автор: @weekends.world</h1>
+<div class="sortbar">
+<button id="sort-desc" onclick="sortCards('desc')">Сначала новые</button>
+<button id="sort-asc" onclick="sortCards('asc')">Сначала старые</button>
+
+</div>
+</div>
+<div class="toolbar"><nav><a class="home" href="../index.html">Все клиенты</a><a class="home" href="tourherdal_home.html">tourherdal</a></nav><div class="searchbox">
+<input type="text" id="refcodeInput" name="refcode-search" placeholder="CLI-00042" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore data-form-type="other" onkeydown="if(event.key==='Enter')searchByRefCode()">
+<button onclick="searchByRefCode()">Найти по коду</button>
+</div></div><div class="filterpanel"><div class="supercat-row"><span class="supercat" id="label-tourherdal_content" onclick="toggleAccordion('tourherdal_content')"><span class="acc-arrow">▾</span> Контент</span><span class="supercat" id="label-tourherdal_theory" onclick="toggleAccordion('tourherdal_theory')"><span class="acc-arrow">▾</span> Теория</span></div><div class="accordion-body" id="acc-tourherdal_content"><div class="topicrow"><a class="" href="tourherdal_content_all.html">Все</a><a class="" href="tourherdal_content_topic_talking_head.html">Говорящая голова</a><a class="" href="tourherdal_content_topic_single_shot.html">Один кадр</a><a class="" href="tourherdal_content_topic_cuts.html">Нарезки</a><a class="" href="tourherdal_content_topic_scripted.html">Игровые</a></div><div class="typerow"><a class="" href="tourherdal_content_all.html">Все</a><a class="" href="tourherdal_content_reels.html">Рилсы</a><a class="" href="tourherdal_content_carousels.html">Карусели</a><a class="" href="tourherdal_content_posts.html">Одиночные посты</a><a class="" href="tourherdal_content_tgposts.html">ТГ-посты</a><a class="" href="tourherdal_content_other.html">Остальное</a></div></div><div class="accordion-body" id="acc-tourherdal_theory"><div class="topicrow"><a class="" href="tourherdal_theory_all.html">Все</a><a class="" href="tourherdal_theory_topic_editing.html">Монтаж</a><a class="" href="tourherdal_theory_topic_fonts.html">Шрифты</a><a class="" href="tourherdal_theory_topic_design.html">Дизайн</a></div><div class="typerow"><a class="" href="tourherdal_theory_all.html">Все</a><a class="" href="tourherdal_theory_reels.html">Рилсы</a><a class="" href="tourherdal_theory_carousels.html">Карусели</a><a class="" href="tourherdal_theory_posts.html">Одиночные посты</a><a class="" href="tourherdal_theory_tgposts.html">ТГ-посты</a><a class="" href="tourherdal_theory_other.html">Остальное</a></div></div></div>
+<div class="grid">
+<div class="card" id="card-CLI-00773" data-date="2026-08-19T09:46:46+00:00"><div class="refcode">CLI-00773</div><div class="vwrap"><video id="v-DcIr_XnS2qn" controls preload="metadata" src="../media/DcIr_XnS2qn.mp4" onplay="this.parentElement.querySelector('.playbtn').classList.add('hidden')" onpause="this.parentElement.querySelector('.playbtn').classList.remove('hidden')" onended="this.parentElement.querySelector('.playbtn').classList.remove('hidden')"></video><div class="playbtn" onclick="document.getElementById('v-DcIr_XnS2qn').play()"></div><div class="selectwrap"><input type="checkbox" class="selchk" id="chk-DcIr_XnS2qn" data-sc="DcIr_XnS2qn" onchange="toggleSel('DcIr_XnS2qn', this.checked)"><label for="chk-DcIr_XnS2qn" class="selmark"></label></div></div><div class="stats"><span>❤ 195</span><span>💬 9</span><span>👁 —</span></div><div class="owner"><a class="authorlink" href="author_weekends_world.html">@weekends.world</a> · <a class="origlink" href="https://www.instagram.com/reel/DcIr_XnS2qn" target="_blank">оригинал</a></div><div class="section-label">Расшифровка</div><div class="text">Т 그 следующий оба -брандchluss quoted from Colorado it&#x27;s actually gonna come from China For decades deal was simple Designed in Portland or Vancouver or California and made in China China built the factories, everyone else got the credit That&#x27;s flipping now A whole generation over there has done making cheaper arcotarics, cheaper sallamon, cheaper north -face They&#x27;re building their own brand And it&#x27;s not just one lane Upper void at a shangai is doing this futuristic, homospirial, technical gear Utopia&#x27;s founders came from Blue, Lemon and Airbnb Гальны, Киэммэй, Киэльфы, Сири, Маутин. О нейджича был в официальной УТ -мпи -партной. И Клумант и Динима, нарусно, все эти пыли что, что я не видел, как фаши. Я думаю, что самые интересные партии, что они не когли в баге. Нет сфейт -70 -х, теклет -шевелем -смейт -шевелем, нет критовенных, сфейт -шевелем, они наше Sole, что даже имени, а у вас, по -теклему, просто, так...</div><div class="section-label">Описание</div><div class="text">Don’t sleep on @uppervoid_ @outopia.run @bluemonte_jp @aonijie_official @kailasglobal #weekends #outdoor #gorpcore #outdoorculture</div></div>
+</div>
+<div class="selbar">
+Выбрано: <span id="selcount">0</span>
+<button onclick="downloadSelectedTranscripts()">Скачать txt</button>
+<button class="teleprompter" onclick="sendToSufler()">На суфлёр</button>
+<button class="teleprompter" onclick="addToSufler()">Добавить в суфлер</button>
+<button class="secondary" onclick="clearSelection()">Сбросить</button>
+</div>
+<script>
+function csSet(sc, idx) {
+  var wrap = document.getElementById('cwrap-' + sc);
+  wrap.dataset.idx = idx;
+  document.getElementById('main-' + sc).src = '../media/' + sc + '_' + idx + '.jpg';
+  wrap.parentElement.querySelectorAll('.thumbs img').forEach(function(t, i) {
+    t.classList.toggle('active', i === idx);
+  });
+}
+function csNav(sc, dir) {
+  var wrap = document.getElementById('cwrap-' + sc);
+  var count = parseInt(wrap.dataset.count, 10);
+  var idx = (parseInt(wrap.dataset.idx, 10) + dir + count) % count;
+  csSet(sc, idx);
+}
+var SITE_SLUG = "tourherdal";
+</script>
+<script src="../assets/site.js"></script>
+</body></html>
