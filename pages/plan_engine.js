@@ -30,6 +30,152 @@ var edits = load(K_EDITS, "{}");
 var sel   = {};
 var currentFilter = "all";
 
+/* ---------- общая для всех планов синхронизация через GitHub ----------
+   localStorage остаётся мгновенным локальным кэшем (быстрая отрисовка),
+   а pages/{key}_plan_state.json в репозитории - источник правды, который
+   видят все, с любого браузера/устройства. */
+var GH_OWNER = "h00050971-star";
+var GH_REPO  = "client-hub";
+var GH_PATH  = "pages/" + CFG.key + "_plan_state.json";
+var GH_API   = "https://api.github.com/repos/" + GH_OWNER + "/" + GH_REPO + "/contents/" + GH_PATH;
+var GH_TOKEN_KEY = "gh_pat_client_hub";
+var ghSha = null;
+
+function ghToken(promptIfMissing) {
+  var t = localStorage.getItem(GH_TOKEN_KEY);
+  if (!t && promptIfMissing) {
+    t = window.prompt("Нужен GitHub-токен (fine-grained PAT на репозиторий client-hub, права Contents: Read & Write), чтобы карточки видели все, а не только этот браузер:");
+    if (t) localStorage.setItem(GH_TOKEN_KEY, t.trim());
+  }
+  return t ? t.trim() : "";
+}
+function b64ToUtf8(b64) {
+  var bin = atob(b64.replace(/\n/g, ""));
+  var bytes = new Uint8Array(bin.length);
+  for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new TextDecoder("utf-8").decode(bytes);
+}
+function utf8ToB64(str) {
+  var bytes = new TextEncoder().encode(str), bin = "";
+  bytes.forEach(function (b) { bin += String.fromCharCode(b); });
+  return btoa(bin);
+}
+function ghFetchState(cb) {
+  fetch(GH_API, { headers: { "Accept": "application/vnd.github+json" }, cache: "no-store" })
+    .then(function (r) {
+      if (r.status === 404) { ghSha = null; return null; }
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    })
+    .then(function (data) {
+      if (!data) { cb && cb(null); return; }
+      ghSha = data.sha;
+      cb && cb(JSON.parse(b64ToUtf8(data.content)));
+    })
+    .catch(function (e) { console.warn("gh fetch failed", e); cb && cb(null); });
+}
+function ghSaveState() {
+  var token = ghToken(true);
+  if (!token) { toast("Не сохранил в общий доступ - нет токена (сохранено только локально)", true); return; }
+  var payload = JSON.stringify({ done: done, own: own, edits: edits }, null, 1);
+  function doPut(sha) {
+    return fetch(GH_API, {
+      method: "PUT",
+      headers: { "Authorization": "Bearer " + token, "Accept": "application/vnd.github+json" },
+      body: JSON.stringify({ message: "plan update: " + CFG.key, content: utf8ToB64(payload), sha: sha || undefined, branch: "main" })
+    });
+  }
+  doPut(ghSha).then(function (r) {
+    if (r.status === 409 || r.status === 422) {
+      return fetch(GH_API, { headers: { "Accept": "application/vnd.github+json" } })
+        .then(function (r2) { return r2.json(); })
+        .then(function (data2) { ghSha = data2.sha; return doPut(ghSha); });
+    }
+    return r;
+  }).then(function (r) {
+    if (!r.ok) return r.json().then(function (e) { throw new Error(e.message || r.status); });
+    return r.json();
+  }).then(function (data) {
+    if (data && data.content) ghSha = data.content.sha;
+    toast("☁️ Сохранено для всех");
+  }).catch(function (e) {
+    toast("Не сохранил в общий доступ: " + e.message, true);
+  });
+}
+
+/* ---------- общая для всех планов синхронизация через GitHub ----------
+   localStorage остаётся мгновенным локальным кэшем (быстрая отрисовка),
+   а pages/{key}_plan_state.json в репозитории - источник правды, который
+   видят все, с любого браузера/устройства. */
+var GH_OWNER = "h00050971-star";
+var GH_REPO  = "client-hub";
+var GH_PATH  = "pages/" + CFG.key + "_plan_state.json";
+var GH_API   = "https://api.github.com/repos/" + GH_OWNER + "/" + GH_REPO + "/contents/" + GH_PATH;
+var GH_TOKEN_KEY = "gh_pat_client_hub";
+var ghSha = null;
+
+function ghToken(promptIfMissing) {
+  var t = localStorage.getItem(GH_TOKEN_KEY);
+  if (!t && promptIfMissing) {
+    t = window.prompt("Нужен GitHub-токен (fine-grained PAT на репозиторий client-hub, права Contents: Read & Write), чтобы карточки видели все, а не только этот браузер:");
+    if (t) localStorage.setItem(GH_TOKEN_KEY, t.trim());
+  }
+  return t ? t.trim() : "";
+}
+function b64ToUtf8(b64) {
+  var bin = atob(b64.replace(/\n/g, ""));
+  var bytes = new Uint8Array(bin.length);
+  for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new TextDecoder("utf-8").decode(bytes);
+}
+function utf8ToB64(str) {
+  var bytes = new TextEncoder().encode(str), bin = "";
+  bytes.forEach(function (b) { bin += String.fromCharCode(b); });
+  return btoa(bin);
+}
+function ghFetchState(cb) {
+  fetch(GH_API, { headers: { "Accept": "application/vnd.github+json" }, cache: "no-store" })
+    .then(function (r) {
+      if (r.status === 404) { ghSha = null; return null; }
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    })
+    .then(function (data) {
+      if (!data) { cb && cb(null); return; }
+      ghSha = data.sha;
+      cb && cb(JSON.parse(b64ToUtf8(data.content)));
+    })
+    .catch(function (e) { console.warn("gh fetch failed", e); cb && cb(null); });
+}
+function ghSaveState() {
+  var token = ghToken(true);
+  if (!token) { toast("Не сохранил в общий доступ - нет токена (сохранено только локально)", true); return; }
+  var payload = JSON.stringify({ done: done, own: own, edits: edits }, null, 1);
+  function doPut(sha) {
+    return fetch(GH_API, {
+      method: "PUT",
+      headers: { "Authorization": "Bearer " + token, "Accept": "application/vnd.github+json" },
+      body: JSON.stringify({ message: "plan update: " + CFG.key, content: utf8ToB64(payload), sha: sha || undefined, branch: "main" })
+    });
+  }
+  doPut(ghSha).then(function (r) {
+    if (r.status === 409 || r.status === 422) {
+      return fetch(GH_API, { headers: { "Accept": "application/vnd.github+json" } })
+        .then(function (r2) { return r2.json(); })
+        .then(function (data2) { ghSha = data2.sha; return doPut(ghSha); });
+    }
+    return r;
+  }).then(function (r) {
+    if (!r.ok) return r.json().then(function (e) { throw new Error(e.message || r.status); });
+    return r.json();
+  }).then(function (data) {
+    if (data && data.content) ghSha = data.content.sha;
+    toast("☁️ Сохранено для всех");
+  }).catch(function (e) {
+    toast("Не сохранил в общий доступ: " + e.message, true);
+  });
+}
+
 function esc(t) {
   return String(t == null ? "" : t)
     .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -213,6 +359,7 @@ function toggleDone(btn) {
   done[id] = !done[id];
   save(K_DONE, done);
   render();
+  ghSaveState();
 }
 
 function toggleSel(el) {
@@ -267,6 +414,7 @@ function saveEdit(btn) {
   }
   render();
   toast("Сохранено ✓");
+  ghSaveState();
 }
 function revertEdit(btn) {
   var t = tileOf(btn), id = t.dataset.id;
@@ -274,6 +422,7 @@ function revertEdit(btn) {
   save(K_EDITS, edits);
   render();
   toast("Вернул исходный текст");
+  ghSaveState();
 }
 
 function applyFilter(f) {
@@ -321,6 +470,7 @@ function saveOwn(date) {
   closeAdd(date);
   render();
   toast("Карточка добавлена ✓");
+  ghSaveState();
 }
 function delOwn(date, i) {
   if (!confirm("Удалить карточку?")) return;
@@ -328,6 +478,7 @@ function delOwn(date, i) {
   if (!own[date].length) delete own[date];
   save(K_OWN, own);
   render();
+  ghSaveState();
 }
 
 /* ---------- выгрузка ---------- */
@@ -430,4 +581,12 @@ window.addToSufler = addToSufler;
 
 shell();
 render();
+ghFetchState(function (remote) {
+  if (!remote) return;
+  done = remote.done || {};
+  own = remote.own || {};
+  edits = remote.edits || {};
+  save(K_DONE, done); save(K_OWN, own); save(K_EDITS, edits);
+  render();
+});
 })();
