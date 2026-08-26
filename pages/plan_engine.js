@@ -17,7 +17,6 @@ var K_EDITS = CFG.key + "_plan_edits";
 
 var KIND = {};
 KINDS.forEach(function (x) { KIND[x.k] = x; });
-KIND.own = KIND.own || { k: "own", label: "Своя идея", emoji: "✏️", color: "#c9a3ff" };
 
 function load(key, fallback) {
   try { return JSON.parse(localStorage.getItem(key) || fallback); } catch (e) { return JSON.parse(fallback); }
@@ -40,6 +39,10 @@ var GH_PATH  = "pages/" + CFG.key + "_plan_state.json";
 var GH_API   = "https://api.github.com/repos/" + GH_OWNER + "/" + GH_REPO + "/contents/" + GH_PATH;
 var GH_TOKEN_KEY = "gh_pat_client_hub";
 var ghSha = null;
+var pendingSaves = 0;
+window.addEventListener("beforeunload", function (e) {
+  if (pendingSaves > 0) { e.preventDefault(); e.returnValue = ""; }
+});
 
 function ghToken(promptIfMissing) {
   var t = localStorage.getItem(GH_TOKEN_KEY);
@@ -77,6 +80,8 @@ function ghFetchState(cb) {
 function ghSaveState() {
   var token = ghToken(true);
   if (!token) { toast("Не сохранил в общий доступ - нет токена (сохранено только локально)", true); return; }
+  pendingSaves++;
+  toast("⏳ Сохраняю для всех... не обновляй страницу");
   var payload = JSON.stringify({ done: done, own: own, edits: edits }, null, 1);
   function doPut(sha) {
     return fetch(GH_API, {
@@ -97,9 +102,11 @@ function ghSaveState() {
     return r.json();
   }).then(function (data) {
     if (data && data.content) ghSha = data.content.sha;
-    toast("☁️ Сохранено для всех");
+    toast("☁️ Сохранено для всех - можно обновлять");
   }).catch(function (e) {
     toast("Не сохранил в общий доступ: " + e.message, true);
+  }).finally(function () {
+    pendingSaves--;
   });
 }
 
@@ -121,8 +128,7 @@ function shell() {
   var filterBtns = '<button data-f="all" class="active">Все</button>'
     + KINDS.map(function (x) {
         return '<button data-f="' + x.k + '">' + x.emoji + " " + esc(x.label) + "</button>";
-      }).join("")
-    + '<button data-f="own">✏️ Свои идеи</button>';
+      }).join("");
 
   var legend = KINDS.filter(function (x) { return x.hint; }).map(function (x) {
     return '<span><b style="color:' + x.color + '">' + x.emoji + " " + esc(x.label)
@@ -195,7 +201,7 @@ function itemsFor(day) {
 }
 
 function kindOptions(selected) {
-  return KINDS.concat([KIND.own]).map(function (x) {
+  return KINDS.map(function (x) {
     return '<option value="' + x.k + '"' + (x.k === selected ? " selected" : "") + ">"
          + x.emoji + " " + esc(x.label) + "</option>";
   }).join("");
