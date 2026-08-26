@@ -92,9 +92,16 @@ function ghSaveState() {
   }
   doPut(ghSha).then(function (r) {
     if (r.status === 409 || r.status === 422) {
-      return fetch(GH_API, { headers: { "Accept": "application/vnd.github+json" } })
-        .then(function (r2) { return r2.json(); })
-        .then(function (data2) { ghSha = data2.sha; return doPut(ghSha); });
+      return fetch(GH_API, { headers: { "Authorization": "Bearer " + token, "Accept": "application/vnd.github+json" } })
+        .then(function (r2) {
+          if (!r2.ok) throw new Error("не смог обновить sha перед повтором: HTTP " + r2.status);
+          return r2.json();
+        })
+        .then(function (data2) {
+          if (!data2.sha) throw new Error("сервер не вернул sha при повторе");
+          ghSha = data2.sha;
+          return doPut(ghSha);
+        });
     }
     return r;
   }).then(function (r) {
