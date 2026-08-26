@@ -246,7 +246,6 @@ function render() {
         +   '<span class="num">' + num + "</span>"
         +   '<span class="kind-badge" style="color:' + color(it.k) + ";border-color:" + color(it.k) + '">'
         +     emoji(it.k) + " " + esc(label(it.k)) + "</span>"
-        +   (it.own ? '<span class="own-badge">своя</span>' : "")
         +   (it.edited ? '<span class="edited-badge">изменён</span>' : "")
         +   (done[it.id] ? '<span class="shot-badge">СНЯТО</span>' : "")
         +   '<span class="spacer"></span>'
