@@ -119,23 +119,26 @@ function label(k) { return (KIND[k] || {}).label || k; }
 function color(k) { return (KIND[k] || {}).color || "#444"; }
 function isService(k) { return !!(KIND[k] || {}).service; }
 
-function tileMediaHtml(media) {
-  if (!media) return "";
+function tileMediaHtml(media, refLink) {
+  var linkHtml = refLink
+    ? '<a class="ref-link" href="' + esc(refLink) + '" target="_blank">&#8599; открыть карточку на рефах</a>'
+    : "";
+  if (!media) return linkHtml;
   if (media.type === "video" && media.url) {
-    return '<div class="tile-media"><video controls preload="metadata" src="' + esc(media.url) + '"></video></div>';
+    return '<div class="tile-media"><video controls preload="metadata" src="' + esc(media.url) + '"></video>' + linkHtml + "</div>";
   }
   if (media.type === "images" && media.urls && media.urls.length) {
     if (media.urls.length === 1) {
-      return '<div class="tile-media"><img class="tile-img-single" src="' + esc(media.urls[0]) + '"></div>';
+      return '<div class="tile-media"><img class="tile-img-single" src="' + esc(media.urls[0]) + '">' + linkHtml + "</div>";
     }
     return '<div class="tile-media"><div class="thumbs-row">'
       + media.urls.map(function (u) { return '<img src="' + esc(u) + '">'; }).join("")
-      + "</div></div>";
+      + "</div>" + linkHtml + "</div>";
   }
   if (media.type === "missing") {
-    return '<div class="tile-media tile-media-missing">&#9888;&#65039; медиа не загрузилось - скажи автору догрузить</div>';
+    return '<div class="tile-media tile-media-missing">&#9888;&#65039; медиа не загрузилось - скажи автору догрузить' + linkHtml + "</div>";
   }
-  return "";
+  return linkHtml;
 }
 
 /* ---------- каркас страницы ---------- */
@@ -214,7 +217,7 @@ function itemsFor(day) {
     };
   });
   (own[day.d] || []).forEach(function (o, i) {
-    list.push({ id: day.d + "_own" + i, k: o.k || "own", h: o.h, s: o.s, own: true, oi: i, media: o.media || null });
+    list.push({ id: day.d + "_own" + i, k: o.k || "own", h: o.h, s: o.s, own: true, oi: i, media: o.media || null, refLink: o.ref_link || null });
   });
   return list;
 }
@@ -256,7 +259,7 @@ function render() {
         +   '<span class="chk" title="Выбрать" onclick="toggleSel(this)"></span>'
         + "</div>"
         + '<span class="hook" onclick="toggleScript(this)"><span class="em">' + emoji(it.k) + "</span>" + esc(it.h) + "</span>"
-        + tileMediaHtml(it.media)
+        + tileMediaHtml(it.media, it.refLink)
         + (it.s ? '<button class="more" onclick="toggleScript(this)">Подробнее ▾</button>'
                 + '<div class="script">' + esc(it.s) + "</div>"
                 : '<span class="fillhint">текст впишем сами, жми ✎</span>')
@@ -362,8 +365,8 @@ function saveEdit(btn) {
   var k = t.querySelector(".ed-k").value;
   if (!h) { toast("Хук не может быть пустым", true); return; }
   if (t.dataset.oi !== undefined) {
-    var prevMedia = (own[t.dataset.date][+t.dataset.oi] || {}).media || null;
-    own[t.dataset.date][+t.dataset.oi] = { k: k, h: h, s: s, media: prevMedia };
+    var prevItem = own[t.dataset.date][+t.dataset.oi] || {};
+    own[t.dataset.date][+t.dataset.oi] = { k: k, h: h, s: s, media: prevItem.media || null, ref_link: prevItem.ref_link || null };
     save(K_OWN, own);
   } else {
     edits[id] = { h: h, s: s };
@@ -422,7 +425,7 @@ function saveOwn(date) {
   var k = document.getElementById("addk_" + date).value;
   if (!h) { toast("Впиши хотя бы хук", true); return; }
   if (!own[date]) own[date] = [];
-  own[date].push({ k: k, h: h, s: s, media: null });
+  own[date].push({ k: k, h: h, s: s, media: null, ref_link: null });
   save(K_OWN, own);
   closeAdd(date);
   render();
@@ -445,12 +448,13 @@ function dupTile(btn) {
   var h = t.querySelector(".ed-h").value.trim();
   var s = t.querySelector(".ed-s").value.trim();
   if (!h) { toast("Нечего дублировать - пустой хук", true); return; }
-  var srcMedia = null;
+  var srcMedia = null, srcRefLink = null;
   if (t.dataset.oi !== undefined && own[date] && own[date][+t.dataset.oi]) {
     srcMedia = own[date][+t.dataset.oi].media || null;
+    srcRefLink = own[date][+t.dataset.oi].ref_link || null;
   }
   if (!own[date]) own[date] = [];
-  own[date].push({ k: k, h: h, s: s, media: srcMedia });
+  own[date].push({ k: k, h: h, s: s, media: srcMedia, ref_link: srcRefLink });
   save(K_OWN, own);
   render();
   toast("Дубликат добавлен ✓ - поменяй тип карточки если нужно");
