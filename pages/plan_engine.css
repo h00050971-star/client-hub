@@ -71,9 +71,15 @@ nav a:hover { border-color:#4a4a4a; }
 
 .trow { display:flex; align-items:center; gap:6px; margin-bottom:4px; }
 .num { font-family:monospace; font-size:10px; color:#5c5c5c; letter-spacing:.03em; }
+.kind-badge { font-size:9.5px; border:1px solid; border-radius:4px; padding:1px 5px; font-weight:600; }
 .own-badge { font-size:9.5px; color:#c9a3ff; border:1px solid #4a3a63; border-radius:4px; padding:1px 5px; }
 .edited-badge { font-size:9.5px; color:#ffb877; border:1px solid #5a4426; border-radius:4px; padding:1px 5px; }
 .shot-badge { font-size:9.5px; color:#2ecc71; border:1px solid #2c5c3c; border-radius:4px; padding:1px 5px; letter-spacing:.04em; }
+.tile-media { margin:6px 0; }
+.tile-media video, .tile-media img.tile-img-single { width:100%; max-height:220px; border-radius:6px; background:#000; object-fit:contain; display:block; }
+.tile-media .thumbs-row { display:flex; gap:4px; overflow-x:auto; }
+.tile-media .thumbs-row img { height:80px; border-radius:4px; flex:0 0 auto; }
+.tile-media-missing { font-size:12px; color:#e8a33d; background:#2a2115; border:1px dashed #5a4426; border-radius:6px; padding:8px 10px; }
 .trow .spacer { flex:1; }
 .chk { width:16px; height:16px; border-radius:4px; border:1.5px solid #555; background:#1a1a1a; cursor:pointer; flex:0 0 auto; position:relative; }
 .chk:hover { border-color:#2ecc71; }
