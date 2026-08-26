@@ -87,6 +87,7 @@ nav a:hover { border-color:#4a4a4a; }
 .minibtn.shot.on { color:#2ecc71; }
 .minibtn.del:hover { color:#ff6b6b; }
 .minibtn.edit:hover { color:#ffb877; }
+.minibtn.dup:hover { color:#7cc4ff; }
 
 .hook { display:block; cursor:pointer; }
 .hook .em { margin-right:5px; }
