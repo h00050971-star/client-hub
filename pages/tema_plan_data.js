@@ -1,10 +1,13 @@
 window.PLAN_META = { kinds: [
-  {k:"sell",     label:"Продающее",  emoji:"💰", color:"#ffd166", hint:"оффер, цена, дедлайн, кейс"},
-  {k:"expert",   label:"Экспертное", emoji:"🧠", color:"#7cc4ff", hint:"разбор, объяснение, инструкция"},
-  {k:"personal", label:"Личное",     emoji:"👤", color:"#6ee7c4", hint:"история, будни, мнение"},
-  {k:"viral",    label:"Виральное",  emoji:"🔥", color:"#ff9f9f", hint:"пересъём миллионника, тренд, скетч"},
-  {k:"watch",    label:"Смотри",     emoji:"👀", color:"#ffa64d", hint:"архив или новость отрасли", service:true},
-  {k:"read",     label:"Читаю",      emoji:"💬", color:"#b0b8c4", hint:"Threads, новости, комментарии", service:true}
+  {k:"stories",  label:"Сторис",     emoji:"📸", color:"#ff8fc7", hint:"Instagram/TG сторис"},
+  {k:"reel",     label:"Рилс",       emoji:"🎬", color:"#7cc4ff", hint:"вертикальное видео"},
+  {k:"carousel", label:"Карусель",   emoji:"🎠", color:"#ffd166", hint:"Instagram-карусель"},
+  {k:"post_ig",  label:"Одиночный пост ИГ", emoji:"🖼️", color:"#c9a4ff", hint:"один слайд/фото в Instagram"},
+  {k:"post_tg",  label:"ТГ-пост",    emoji:"📨", color:"#4dabf7", hint:"пост в Telegram-канал"},
+  {k:"circle",   label:"Кружок",     emoji:"⭕", color:"#6ee7c4", hint:"видео-кружок"},
+  {k:"threads",  label:"Тредс",      emoji:"🧵", color:"#b0b8c4", hint:"пост в Threads"},
+  {k:"meme",     label:"Мем",        emoji:"😂", color:"#ff9f9f", hint:"мем/шутка"},
+  {k:"draft",    label:"Мастер-текст", emoji:"📝", color:"#ffa64d", hint:"черновик текста, ещё не оформлено"}
 ]};
 
 window.PLAN_DAYS = [
